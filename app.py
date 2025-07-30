@@ -109,16 +109,6 @@ def result():
 def salvar():
     from datetime import datetime
     import pymysql
-
-    def conectar_db():
-        return pymysql.connect(
-            host='localhost',
-            user='root',
-            password='Mau18042001!',
-            database='search_effectors',
-            cursorclass=pymysql.cursors.DictCursor
-        )
-    
     sequencia = request.form['sequencia']
     nome_sequencia = request.form['nome_sequencia']
     tipo = 'nucleo' if all (base in 'ATCGatcg' for base in sequencia) else 'amino'
