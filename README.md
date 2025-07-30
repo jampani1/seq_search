@@ -14,11 +14,11 @@ Stacks
 
 Some DEMO below:
 
-    ❗ Clone this repo
+    Clone this repo
         git clone https://github.com/jampani1/seq.search.git
         cd seq_search
 
-    ❗ Activate the virtual environment
+    Activate the virtual environment
         (Windows)
         python -m venv venv
         .\venv\Scripts\activate
@@ -27,10 +27,10 @@ Some DEMO below:
         python3 -m venv venv
         source venv/bin/activate
 
-    ❗ Install the dependencies
+    Install the dependencies
         pip install -r requirements.txt
 
-    ❗ And a /db/db.py with:
+    And a /db/db.py with:
         import pymysql
         # Configuração da conexão
         def conectar_db():
@@ -43,7 +43,7 @@ Some DEMO below:
         cursorclass=pymysql.cursors.DictCursor
     )
     
-    ⚠️ DONT FORGET to create in MySQL
+    !!! DONT FORGET to create in MySQL !!!
         CREATE TABLE sequencias (
             id INT AUTO_INCREMENT PRIMARY KEY,
             nome VARCHAR(100),
@@ -63,11 +63,11 @@ Some DEMO below:
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
         );    
-🧪 Soon  
+Soon  
 Result exports  
 More bioinfo tools  
   
-📝 License  
+License  
 This project is licensed under the MIT License — you are free to use, modify, and distribute this code for any purpose, but it comes without any warranty.  
 For more details, see the <a href="https://opensource.org/licenses/MIT">MIT License</a>.  
   
