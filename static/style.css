@@ -1,0 +1,233 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+fieldset {
+    width: 100%;
+    max-width: 700px;
+    margin: 40px auto;
+    box-sizing: border-box;
+    background-color: #A8DADC;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    overflow: auto;
+}
+
+legend {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+form {
+    padding: 5%;
+    border-radius: 8px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #5F6F81;
+    text-align: center;
+    font-size: 15px;
+}
+
+.input_fields {
+    flex: 3;
+    text-align: left;
+}
+
+.input_fields button {
+    display: block;
+    margin: 20px auto 0 auto;
+}
+
+.file-input {
+    display: none;
+}
+
+.custom-file-label {
+    display: inline-block;
+    background-color: #457B9D;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+}
+
+#nome-arquivo {
+    display: block;
+    margin-top: 5px;
+    color: #1D3557;
+    font-size: 14px;
+}
+
+.seq_tipo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.seq_tipo label {
+    margin-bottom: 10px;  /* adiciona espaçamento entre "Type" e os botões */
+}
+
+.seq_tipo_itens {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 4px;
+}
+
+.radio_option {
+    display: flex;
+    font-size: 5px;             /* Tamanho do texto */
+}
+
+.radio_option input[type="radio"] { /* tamanho do botão */
+    width: 8px;
+    height: 8px;
+}
+
+.seq {
+    width: 90%;
+    height: 350px;
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background-color: #6C757D;
+    resize: none;
+}
+
+.seq_result {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: monospace;
+    line-height: 1.5;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow-x: auto;
+    background-color: #6C757D;
+    resize: none;
+    white-space: pre-wrap;     
+    overflow-y: auto;           
+    color: white;             
+}
+
+
+.efetor {
+    width: 90%;
+    height: 12px;
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background-color: #6C757D;
+}
+
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background-color: #457B9D;
+    text-align: center;
+    appearance: none;
+    font-size: 16px;
+    color: white;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #F1FAEE;
+    border: none;
+    border-radius: 6px;
+    color: #1D3557;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+mark {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+}
+
+/* parte result.html para organizar lado a lado */
+
+.parte-salvar {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    width: 90%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.result-page {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;  /* só esconde rolagem horizontal */
+    overflow-y: auto;    /* permite rolagem vertical */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.result-page input[type="text"],
+.result-page textarea {
+    width: 65%;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #2A9D8F;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #457B9D;
+}
+
+input::placeholder {
+    font-style: italic;
+    color: #666;
+}

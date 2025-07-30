@@ -1,0 +1,5 @@
+# Arquivos sensíveis
+db.py
+__pycache__/
+.env
+*.pyc

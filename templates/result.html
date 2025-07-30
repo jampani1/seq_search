@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="result-page">
+    <div class="result-page">
+        <fieldset>
+        <div class="parte-resultado">
+            <legend>Search results</legend>
+            <p><strong>{{ resultado }}</strong></p>
+
+            <label for="sequencia">Sequence</label><br>
+            <div class="seq_result">{{sequencia_marcada|trim|safe }} </div>
+
+            <form action="{{ url_for('index') }}">
+                <button type="submit">Home</button>
+            </form>
+        </div>
+        <div class="parte-salvar">
+            <form action="{{ url_for('salvar') }}" method="POST">
+            <input type="hidden" name="sequencia" value="{{ sequencia }}">
+            <input type="hidden" name="efetor" value="{{ sequencia[pos:pos+ efetor|length] if pos != -1 else '' }}">
+            <input type="hidden" name="tipo" value="{{ tipo }}">
+            <input type="hidden" name="pos_inicio" value="{{ pos }}">
+            <input type="hidden" name="pos_fim" value="{{ pos + efetor|length }}">
+
+            <label for="nome_efetor">Effector name</label>
+            <input type="text" name="nome_efetor" required placeholder="AvrRpt2, HopZ1a, ToxA"> <br>
+            <br>
+            <label for="nome_sequencia">Sequence name</label>
+            <input type="text" name="nome_sequencia" required placeholder="N. tropicalis mtDNA"> <br>
+            <br>
+            <button type="submit">Save</button>
+            </form>
+        </div>
+    </fieldset>
+    </div>
+</body>
+</html>

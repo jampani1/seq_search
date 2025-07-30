@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Effectors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <fieldset>
+        <legend>Search Effectors V1</legend>
+        <div id="mensagem-flash">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul>
+                    {% for category, message in messages %}
+                        <li style="color: red;">{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <form id="formulario" method="POST" enctype="multipart/form-data">
+            <div class="flex-container">
+                <div class="input_fields">
+                    <label for="sequencia">Input your sequence</label>
+                    <textarea class="seq" type="text" name="sequencia"></textarea>
+                    <label for="efetor">Effector</label>
+                    <input class="efetor" type="text" name="efetor">
+                    <br>
+                    <button type="submit" name="action" value="search">Search</button>
+                </div>
+                <div class="seq_tipo">
+                    <label for="arquivo" class="custom-file-label">Or a .fasta file</label>
+                    <input id="arquivo" class="file-input" type="file" name="arquivo" accept=".fasta" onchange="mostrarNomeArquivo()">
+                    <span id="nome-arquivo"></span>
+                    <br><br>
+                    <label for="tipo">Type</label>
+                        <div class="seq_tipo_itens">
+                            <div class="radio_option">
+                                <input type="radio" name="tipo" value="dna"><label for="tipo_dna">DNA</label>
+                            </div>
+                            <div class="radio_option">
+                                <input type="radio" name="tipo" value="protein"><label for="tipo_protein">Protein</label>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+    <div style="height: 40px;"></div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
