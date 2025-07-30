@@ -65,15 +65,15 @@ Some DEMO below:
         );
 
 🧪 Soon
-    Result exports
-    More bioinfo tools
+        Result exports
+        More bioinfo tools
 
 📝 License
-This project is licensed under the MIT License — you are free to use, modify, and distribute this code for any purpose, but it comes without any warranty.
-For more details, see the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
+        This project is licensed under the MIT License — you are free to use, modify, and distribute this code for any purpose, but it comes without any warranty.
+        For more details, see the <a href="https://opensource.org/licenses/MIT">MIT License</a>.
 
 Enjoy and lets talk about it!
-[![X](https://img.shields.io/badge/X-000000?style=flat&logoColor=white)](https://x.com/jampaninho)
-- 💼 [LinkedIn](https://www.linkedin.com/in/mauriciojampani)
+        [![X](https://img.shields.io/badge/X-000000?style=flat&logoColor=white)](https://x.com/jampaninho)
+        - 💼 [LinkedIn](https://www.linkedin.com/in/mauriciojampani)
 
 
