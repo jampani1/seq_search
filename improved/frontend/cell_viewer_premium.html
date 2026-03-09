@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell Viewer Premium - Bioluminescent Style</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #000;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+        #container { width: 100vw; height: 100vh; }
+
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 50px;
+            background: rgba(0, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4ecdc4;
+        }
+
+        .header .badge {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .controls {
+            position: fixed;
+            top: 70px; left: 20px;
+            width: 260px;
+            background: rgba(0, 10, 20, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 90;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+        }
+
+        .section { margin-bottom: 15px; }
+        .section h3 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4ecdc4;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.2);
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .preset-btn {
+            padding: 12px 8px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            color: #aaa;
+        }
+
+        .preset-btn:hover {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: #4ecdc4;
+            transform: translateY(-2px);
+        }
+
+        .preset-btn.active {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.4), rgba(68, 160, 141, 0.4));
+            border-color: #4ecdc4;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+        }
+
+        .preset-btn .icon { font-size: 1.5rem; margin-bottom: 4px; }
+        .preset-btn .name { font-size: 0.75rem; }
+
+        .slider-group { margin-bottom: 12px; }
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: #888;
+        }
+        .slider-group label span { color: #4ecdc4; font-weight: 600; }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(78, 205, 196, 0.2);
+            appearance: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-row label { font-size: 0.8rem; color: #aaa; }
+
+        .toggle {
+            width: 40px;
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .toggle.active { background: rgba(78, 205, 196, 0.5); }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+        .toggle.active::after { left: 22px; background: #4ecdc4; }
+
+        .info-panel {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: rgba(0, 10, 20, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 90;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            min-width: 200px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .stat {
+            text-align: center;
+            padding: 8px;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 6px;
+        }
+        .stat .value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4ecdc4;
+        }
+        .stat .label {
+            font-size: 0.65rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .version-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            background: rgba(0, 10, 20, 0.9);
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            z-index: 100;
+        }
+        .version-toggle a {
+            color: #666;
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        .version-toggle a.active {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: #000;
+            font-weight: 600;
+        }
+        .version-toggle a:hover:not(.active) { background: rgba(78, 205, 196, 0.2); }
+
+        .loading {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+        .loading.hidden { opacity: 0; pointer-events: none; }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(78, 205, 196, 0.2);
+            border-top-color: #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .loading p { margin-top: 20px; color: #4ecdc4; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Right Panel - Component List & Info */
+        .right-panel {
+            position: fixed;
+            top: 60px;
+            right: 15px;
+            width: 280px;
+            max-height: calc(100vh - 80px);
+            background: rgba(0, 10, 20, 0.9);
+            backdrop-filter: blur(15px);
+            border-radius: 12px;
+            z-index: 90;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            overflow-y: auto;
+        }
+        .component-list { padding: 15px; }
+        .component-list h3 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #4ecdc4;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(78, 205, 196, 0.2);
+        }
+        .component-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            background: rgba(78, 205, 196, 0.05);
+            border: 1px solid rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .component-item:hover {
+            background: rgba(78, 205, 196, 0.15);
+            border-color: #4ecdc4;
+            transform: translateX(-3px);
+        }
+        .component-item.active {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: #4ecdc4;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.2);
+        }
+        .component-item .icon { font-size: 1.3rem; }
+        .component-item .name { font-size: 0.85rem; color: #ccc; }
+
+        .info-panel {
+            padding: 15px;
+            border-top: 1px solid rgba(78, 205, 196, 0.2);
+            display: none;
+        }
+        .info-panel.visible { display: block; }
+        .info-title {
+            color: #4ecdc4;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-description {
+            font-size: 0.8rem;
+            color: #999;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .info-field { margin-bottom: 10px; }
+        .info-field label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #666;
+        }
+        .info-field .value {
+            font-size: 0.85rem;
+            color: #ddd;
+        }
+        .gene-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .gene-tag {
+            background: rgba(78, 205, 196, 0.15);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #4ecdc4;
+        }
+        .btn-reset-view {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 6px;
+            color: #4ecdc4;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-reset-view:hover {
+            background: rgba(78, 205, 196, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Carregando visualizacao...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>
+            Cell Viewer 3D
+            <span class="badge">PREMIUM</span>
+        </h1>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="font-size: 0.8rem; color: #666;">FPS: <span id="fps" style="color: #4ecdc4;">60</span></span>
+        </div>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="section">
+            <h3>Visualizacao</h3>
+            <div class="btn-grid">
+                <div class="preset-btn active" data-view="cell">
+                    <div class="icon">🔬</div>
+                    <div class="name">Celula</div>
+                </div>
+                <div class="preset-btn" data-view="dna">
+                    <div class="icon">🧬</div>
+                    <div class="name">Cromatina</div>
+                </div>
+                <div class="preset-btn" data-view="infection">
+                    <div class="icon">🦠</div>
+                    <div class="name">Infeccao</div>
+                </div>
+                <div class="preset-btn" data-view="signaling">
+                    <div class="icon">⚡</div>
+                    <div class="name">Sinalizacao</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Efeitos</h3>
+            <div class="slider-group">
+                <label>Bloom <span id="bloomVal">1.5</span></label>
+                <input type="range" id="bloom" min="0" max="3" value="1.5" step="0.1">
+            </div>
+            <div class="slider-group">
+                <label>Particulas <span id="particlesVal">500</span></label>
+                <input type="range" id="particles" min="100" max="2000" value="500" step="100">
+            </div>
+            <div class="slider-group">
+                <label>Ondulacao <span id="waveVal">1.0</span></label>
+                <input type="range" id="wave" min="0" max="2" value="1" step="0.1">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Componentes</h3>
+            <div class="toggle-row">
+                <label>Membrana</label>
+                <div class="toggle active" data-toggle="membrane"></div>
+            </div>
+            <div class="toggle-row">
+                <label>Nucleo</label>
+                <div class="toggle active" data-toggle="nucleus"></div>
+            </div>
+            <div class="toggle-row">
+                <label>Mitocondrias</label>
+                <div class="toggle active" data-toggle="mitochondria"></div>
+            </div>
+            <div class="toggle-row">
+                <label>Reticulo ER</label>
+                <div class="toggle active" data-toggle="er"></div>
+            </div>
+            <div class="toggle-row">
+                <label>Cloroplastos</label>
+                <div class="toggle active" data-toggle="chloroplasts"></div>
+            </div>
+            <div class="toggle-row">
+                <label>Particulas</label>
+                <div class="toggle active" data-toggle="particles"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="info-panel">
+        <div class="stats-grid">
+            <div class="stat">
+                <div class="value" id="objCount">0</div>
+                <div class="label">Objetos</div>
+            </div>
+            <div class="stat">
+                <div class="value" id="triCount">0</div>
+                <div class="label">Triangulos</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel - Component Explorer -->
+    <div class="right-panel">
+        <div class="component-list">
+            <h3>Compartimentos</h3>
+            <div class="component-item" data-target="nucleus">
+                <span class="icon">🟣</span>
+                <span class="name">Núcleo</span>
+            </div>
+            <div class="component-item" data-target="mitochondria">
+                <span class="icon">🟠</span>
+                <span class="name">Mitocôndrias</span>
+            </div>
+            <div class="component-item" data-target="chloroplasts">
+                <span class="icon">🟢</span>
+                <span class="name">Cloroplastos</span>
+            </div>
+            <div class="component-item" data-target="er">
+                <span class="icon">🔵</span>
+                <span class="name">Retículo Endoplasmático</span>
+            </div>
+            <div class="component-item" data-target="membrane">
+                <span class="icon">🫧</span>
+                <span class="name">Membrana</span>
+            </div>
+            </div>
+        <div class="info-panel" id="componentInfo">
+            <!-- Info populated by JS -->
+        </div>
+        <div style="padding: 15px; border-top: 1px solid rgba(78, 205, 196, 0.2);">
+            <button class="btn-reset-view" id="resetView">↺ Resetar Vista</button>
+        </div>
+    </div>
+
+    <!-- Version Toggle -->
+    <div class="version-toggle">
+        <a href="index.html">← Hub</a>
+        <a href="organelle_gallery.html">Galeria</a>
+        <a href="cell_simulator.html">Simulator</a>
+    </div>
+
+    <!-- Scripts -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // =====================================================
+        // GLOBALS
+        // =====================================================
+
+        let scene, camera, renderer, controls, composer, bloomPass;
+        let clock = new THREE.Clock();
+        let frameCount = 0, lastFpsTime = 0;
+
+        // Cell components
+        let membrane, nucleus, mitochondria = [], chloroplasts = [];
+        let erTubes = [], particles, particleSystem;
+
+        // Settings
+        let settings = {
+            bloom: 1.5,
+            particleCount: 500,
+            waveIntensity: 1.0,
+            showMembrane: true,
+            showNucleus: true,
+            showMitochondria: true,
+            showER: true,
+            showChloroplasts: true,
+            showParticles: true,
+            currentView: 'cell'
+        };
+
+        // =====================================================
+        // SHADERS
+        // =====================================================
+
+        const membraneVertexShader = `
+            uniform float time;
+            uniform float waveIntensity;
+            varying vec3 vNormal;
+            varying vec3 vPosition;
+            varying vec2 vUv;
+
+            // Simplex noise function
+            vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+            vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+            vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+            float snoise(vec3 v) {
+                const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+                const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+                vec3 i  = floor(v + dot(v, C.yyy));
+                vec3 x0 = v - i + dot(i, C.xxx);
+                vec3 g = step(x0.yzx, x0.xyz);
+                vec3 l = 1.0 - g;
+                vec3 i1 = min(g.xyz, l.zxy);
+                vec3 i2 = max(g.xyz, l.zxy);
+                vec3 x1 = x0 - i1 + C.xxx;
+                vec3 x2 = x0 - i2 + C.yyy;
+                vec3 x3 = x0 - D.yyy;
+                i = mod289(i);
+                vec4 p = permute(permute(permute(
+                    i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                    + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                    + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+                float n_ = 0.142857142857;
+                vec3 ns = n_ * D.wyz - D.xzx;
+                vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+                vec4 x_ = floor(j * ns.z);
+                vec4 y_ = floor(j - 7.0 * x_);
+                vec4 x = x_ *ns.x + ns.yyyy;
+                vec4 y = y_ *ns.x + ns.yyyy;
+                vec4 h = 1.0 - abs(x) - abs(y);
+                vec4 b0 = vec4(x.xy, y.xy);
+                vec4 b1 = vec4(x.zw, y.zw);
+                vec4 s0 = floor(b0)*2.0 + 1.0;
+                vec4 s1 = floor(b1)*2.0 + 1.0;
+                vec4 sh = -step(h, vec4(0.0));
+                vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+                vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+                vec3 p0 = vec3(a0.xy, h.x);
+                vec3 p1 = vec3(a0.zw, h.y);
+                vec3 p2 = vec3(a1.xy, h.z);
+                vec3 p3 = vec3(a1.zw, h.w);
+                vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+                p0 *= norm.x;
+                p1 *= norm.y;
+                p2 *= norm.z;
+                p3 *= norm.w;
+                vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+                m = m * m;
+                return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+            }
+
+            void main() {
+                vUv = uv;
+                vNormal = normal;
+                vPosition = position;
+
+                // Multi-layer noise for organic membrane
+                float noise1 = snoise(position * 0.5 + time * 0.3) * 0.3;
+                float noise2 = snoise(position * 1.0 + time * 0.5) * 0.15;
+                float noise3 = snoise(position * 2.0 + time * 0.8) * 0.05;
+
+                float displacement = (noise1 + noise2 + noise3) * waveIntensity;
+
+                vec3 newPosition = position + normal * displacement;
+
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+            }
+        `;
+
+        const membraneFragmentShader = `
+            uniform float time;
+            uniform vec3 color1;
+            uniform vec3 color2;
+            varying vec3 vNormal;
+            varying vec3 vPosition;
+            varying vec2 vUv;
+
+            void main() {
+                // Fresnel effect for edge glow
+                vec3 viewDirection = normalize(cameraPosition - vPosition);
+                float fresnel = pow(1.0 - abs(dot(viewDirection, vNormal)), 3.0);
+
+                // Animated color gradient
+                float gradient = sin(vPosition.y * 0.5 + time * 0.5) * 0.5 + 0.5;
+                vec3 baseColor = mix(color1, color2, gradient);
+
+                // Add fresnel glow
+                vec3 finalColor = baseColor + fresnel * color2 * 2.0;
+
+                // Transparency based on fresnel (more transparent in center)
+                float alpha = 0.3 + fresnel * 0.5;
+
+                gl_FragColor = vec4(finalColor, alpha);
+            }
+        `;
+
+        // =====================================================
+        // INIT
+        // =====================================================
+
+        function init() {
+            const container = document.getElementById('container');
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000510);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 20);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.0;
+            container.appendChild(renderer.domElement);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.minDistance = 5;
+            controls.maxDistance = 50;
+
+            // Post-processing
+            setupPostProcessing();
+
+            // Lighting
+            setupLighting();
+
+            // Create cell
+            createCell();
+
+            // Event listeners
+            setupEventListeners();
+
+            // Hide loading
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 500);
+
+            // Start animation
+            animate();
+        }
+
+        function setupPostProcessing() {
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+
+            bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                settings.bloom, // strength
+                0.4,           // radius
+                0.85           // threshold
+            );
+            composer.addPass(bloomPass);
+        }
+
+        function setupLighting() {
+            // Ambient
+            scene.add(new THREE.AmbientLight(0x111122, 0.3));
+
+            // Main cyan light
+            const mainLight = new THREE.PointLight(0x4ecdc4, 2, 50);
+            mainLight.position.set(10, 10, 10);
+            scene.add(mainLight);
+
+            // Purple accent
+            const purpleLight = new THREE.PointLight(0x9b59b6, 1.5, 40);
+            purpleLight.position.set(-10, -5, 10);
+            scene.add(purpleLight);
+
+            // Orange accent
+            const orangeLight = new THREE.PointLight(0xe67e22, 1, 30);
+            orangeLight.position.set(0, -10, -10);
+            scene.add(orangeLight);
+
+            // Green accent
+            const greenLight = new THREE.PointLight(0x2ecc71, 1, 30);
+            greenLight.position.set(-10, 5, -10);
+            scene.add(greenLight);
+        }
+
+        // =====================================================
+        // CELL CREATION
+        // =====================================================
+
+        function createCell() {
+            createMembrane();
+            createNucleus();
+            createMitochondria();
+            createER();
+            createChloroplasts();
+            createParticleSystem();
+            updateStats();
+        }
+
+        function createMembrane() {
+            const geometry = new THREE.IcosahedronGeometry(8, 5);
+            const material = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0 },
+                    waveIntensity: { value: settings.waveIntensity },
+                    color1: { value: new THREE.Color(0x1a5f7a) },
+                    color2: { value: new THREE.Color(0x4ecdc4) }
+                },
+                vertexShader: membraneVertexShader,
+                fragmentShader: membraneFragmentShader,
+                transparent: true,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+
+            membrane = new THREE.Mesh(geometry, material);
+            scene.add(membrane);
+        }
+
+        function createNucleus() {
+            const group = new THREE.Group();
+
+            // Nuclear envelope (outer)
+            const outerGeom = new THREE.SphereGeometry(2.5, 32, 32);
+            const outerMat = new THREE.MeshPhysicalMaterial({
+                color: 0x6c5ce7,
+                roughness: 0.2,
+                metalness: 0.1,
+                transmission: 0.6,
+                thickness: 1,
+                emissive: 0x6c5ce7,
+                emissiveIntensity: 0.3,
+                side: THREE.DoubleSide
+            });
+            const outer = new THREE.Mesh(outerGeom, outerMat);
+            group.add(outer);
+
+            // Nucleolus (inner)
+            const innerGeom = new THREE.SphereGeometry(1.2, 24, 24);
+            const innerMat = new THREE.MeshStandardMaterial({
+                color: 0xe74c3c,
+                roughness: 0.5,
+                metalness: 0.2,
+                emissive: 0xe74c3c,
+                emissiveIntensity: 0.5
+            });
+            const inner = new THREE.Mesh(innerGeom, innerMat);
+            group.add(inner);
+
+            // Nuclear pores (small spheres on surface)
+            for (let i = 0; i < 20; i++) {
+                const phi = Math.acos(-1 + (2 * i) / 20);
+                const theta = Math.sqrt(20 * Math.PI) * phi;
+                const poreGeom = new THREE.SphereGeometry(0.15, 8, 8);
+                const poreMat = new THREE.MeshStandardMaterial({
+                    color: 0x9b59b6,
+                    emissive: 0x9b59b6,
+                    emissiveIntensity: 0.8
+                });
+                const pore = new THREE.Mesh(poreGeom, poreMat);
+                pore.position.setFromSphericalCoords(2.5, phi, theta);
+                group.add(pore);
+            }
+
+            // CROMATINA - representacao biologicamente correta
+            // Em escala nuclear, DNA aparece como cromatina difusa, NAO como helice
+            // A dupla helice so seria visivel em escala molecular (nanometros)
+
+            const chromatinGroup = new THREE.Group();
+
+            // Eucromatina (centro do nucleo) - mais difusa, genes ativos
+            const euchromatinCount = 80;
+            const euchromatinMaterial = new THREE.MeshStandardMaterial({
+                color: 0x9b59b6,
+                emissive: 0x8e44ad,
+                emissiveIntensity: 0.6,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            for (let i = 0; i < euchromatinCount; i++) {
+                // Distribuicao mais densa no centro
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                const r = Math.pow(Math.random(), 0.5) * 1.8; // mais no centro
+
+                const size = 0.05 + Math.random() * 0.08;
+                const spotGeo = new THREE.SphereGeometry(size, 6, 6);
+                const spot = new THREE.Mesh(spotGeo, euchromatinMaterial);
+
+                spot.position.setFromSphericalCoords(r, phi, theta);
+                chromatinGroup.add(spot);
+            }
+
+            // Heterocromatina (periferia do nucleo) - mais densa, genes silenciados
+            const heterochromatinCount = 40;
+            const heterochromatinMaterial = new THREE.MeshStandardMaterial({
+                color: 0x6c3483,
+                emissive: 0x5b2c6f,
+                emissiveIntensity: 0.4,
+                transparent: true,
+                opacity: 0.85
+            });
+
+            for (let i = 0; i < heterochromatinCount; i++) {
+                // Distribuicao na periferia (junto ao envelope)
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                const r = 1.8 + Math.random() * 0.5; // periferia
+
+                const size = 0.08 + Math.random() * 0.12;
+                const spotGeo = new THREE.SphereGeometry(size, 6, 6);
+                const spot = new THREE.Mesh(spotGeo, heterochromatinMaterial);
+
+                spot.position.setFromSphericalCoords(r, phi, theta);
+                chromatinGroup.add(spot);
+            }
+
+            // Territorios cromossomicos (regioes maiores, coloridas)
+            const territories = [
+                { color: 0xe74c3c, pos: [0.8, 0.5, 0.3] },
+                { color: 0x3498db, pos: [-0.7, 0.4, -0.5] },
+                { color: 0x27ae60, pos: [0.2, -0.8, 0.4] },
+                { color: 0xf39c12, pos: [-0.5, -0.3, 0.7] }
+            ];
+
+            territories.forEach(t => {
+                const territoryGeo = new THREE.SphereGeometry(0.35, 12, 12);
+                const territoryMat = new THREE.MeshStandardMaterial({
+                    color: t.color,
+                    emissive: t.color,
+                    emissiveIntensity: 0.3,
+                    transparent: true,
+                    opacity: 0.5
+                });
+                const territory = new THREE.Mesh(territoryGeo, territoryMat);
+                territory.position.set(...t.pos);
+                territory.scale.set(1, 0.8, 1.2); // forma irregular
+                chromatinGroup.add(territory);
+            });
+
+            group.add(chromatinGroup);
+
+            nucleus = group;
+            scene.add(nucleus);
+        }
+
+        function createMitochondria() {
+            const positions = [
+                { x: 4, y: 2, z: 1, rot: 0.3 },
+                { x: -3, y: -2, z: 3, rot: 1.2 },
+                { x: 2, y: -3, z: -2, rot: 0.8 },
+                { x: -4, y: 1, z: -3, rot: 2.1 },
+                { x: 5, y: -1, z: 2, rot: 1.5 },
+                { x: -2, y: 3, z: 4, rot: 0.5 }
+            ];
+
+            positions.forEach(pos => {
+                const group = new THREE.Group();
+
+                // Outer membrane
+                const outerGeom = new THREE.CapsuleGeometry(0.5, 1.5, 8, 16);
+                const outerMat = new THREE.MeshPhysicalMaterial({
+                    color: 0xe67e22,
+                    roughness: 0.3,
+                    metalness: 0.2,
+                    emissive: 0xe67e22,
+                    emissiveIntensity: 0.4,
+                    transmission: 0.3,
+                    thickness: 0.5
+                });
+                const outer = new THREE.Mesh(outerGeom, outerMat);
+                group.add(outer);
+
+                // Cristae (internal folds)
+                for (let i = 0; i < 4; i++) {
+                    const cristaGeom = new THREE.BoxGeometry(0.8, 0.05, 0.3);
+                    const cristaMat = new THREE.MeshStandardMaterial({
+                        color: 0xd35400,
+                        emissive: 0xe67e22,
+                        emissiveIntensity: 0.6
+                    });
+                    const crista = new THREE.Mesh(cristaGeom, cristaMat);
+                    crista.position.y = -0.5 + i * 0.35;
+                    crista.rotation.z = (i % 2) * 0.2;
+                    group.add(crista);
+                }
+
+                group.position.set(pos.x, pos.y, pos.z);
+                group.rotation.set(pos.rot, pos.rot * 0.5, pos.rot * 0.3);
+
+                mitochondria.push(group);
+                scene.add(group);
+            });
+        }
+
+        function createER() {
+            // Create curved tube paths for ER
+            const erColor = 0xf1c40f;
+
+            // Multiple curved paths
+            const paths = [
+                createCurvePath(3, 0, 3, 1.5),
+                createCurvePath(4, 1, -2, 2),
+                createCurvePath(-3, -1, 4, 1.8),
+                createCurvePath(2, 2, 2, 1.2),
+                createCurvePath(-4, 0, -3, 2.2)
+            ];
+
+            paths.forEach(path => {
+                const tubeGeom = new THREE.TubeGeometry(path, 32, 0.15, 8, false);
+                const tubeMat = new THREE.MeshPhysicalMaterial({
+                    color: erColor,
+                    roughness: 0.2,
+                    metalness: 0.3,
+                    emissive: erColor,
+                    emissiveIntensity: 0.5,
+                    transmission: 0.4,
+                    thickness: 0.5
+                });
+                const tube = new THREE.Mesh(tubeGeom, tubeMat);
+                erTubes.push(tube);
+                scene.add(tube);
+            });
+
+            // Ribosomes on ER
+            erTubes.forEach(tube => {
+                const positions = tube.geometry.attributes.position;
+                for (let i = 0; i < positions.count; i += 20) {
+                    const x = positions.getX(i);
+                    const y = positions.getY(i);
+                    const z = positions.getZ(i);
+
+                    const riboGeom = new THREE.SphereGeometry(0.08, 6, 6);
+                    const riboMat = new THREE.MeshStandardMaterial({
+                        color: 0x9b59b6,
+                        emissive: 0x9b59b6,
+                        emissiveIntensity: 0.8
+                    });
+                    const ribo = new THREE.Mesh(riboGeom, riboMat);
+                    ribo.position.set(x, y, z);
+                    scene.add(ribo);
+                }
+            });
+        }
+
+        function createCurvePath(startX, startY, startZ, scale) {
+            const points = [];
+            for (let i = 0; i <= 10; i++) {
+                const t = i / 10;
+                const x = startX + Math.sin(t * Math.PI * 2) * scale;
+                const y = startY + Math.cos(t * Math.PI * 1.5) * scale * 0.5;
+                const z = startZ + t * scale * 2 - scale;
+                points.push(new THREE.Vector3(x, y, z));
+            }
+            return new THREE.CatmullRomCurve3(points);
+        }
+
+        function createChloroplasts() {
+            const positions = [
+                { x: -5, y: 0, z: 2 },
+                { x: 4, y: -2, z: -4 },
+                { x: -3, y: 3, z: -2 },
+                { x: 5, y: 1, z: -1 }
+            ];
+
+            positions.forEach(pos => {
+                const group = new THREE.Group();
+
+                // Outer envelope
+                const outerGeom = new THREE.SphereGeometry(1, 32, 16);
+                outerGeom.scale(1.5, 0.6, 1);
+                const outerMat = new THREE.MeshPhysicalMaterial({
+                    color: 0x27ae60,
+                    roughness: 0.3,
+                    metalness: 0.1,
+                    emissive: 0x27ae60,
+                    emissiveIntensity: 0.4,
+                    transmission: 0.3,
+                    thickness: 0.5
+                });
+                const outer = new THREE.Mesh(outerGeom, outerMat);
+                group.add(outer);
+
+                // Thylakoid stacks (grana)
+                for (let i = 0; i < 5; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        const discGeom = new THREE.CylinderGeometry(0.3, 0.3, 0.05, 16);
+                        const discMat = new THREE.MeshStandardMaterial({
+                            color: 0x1abc9c,
+                            emissive: 0x16a085,
+                            emissiveIntensity: 0.6
+                        });
+                        const disc = new THREE.Mesh(discGeom, discMat);
+                        disc.position.set(-0.6 + i * 0.3, -0.15 + j * 0.12, 0);
+                        disc.rotation.x = Math.PI / 2;
+                        group.add(disc);
+                    }
+                }
+
+                group.position.set(pos.x, pos.y, pos.z);
+                group.rotation.set(
+                    Math.random() * 0.5,
+                    Math.random() * Math.PI * 2,
+                    Math.random() * 0.5
+                );
+
+                chloroplasts.push(group);
+                scene.add(group);
+            });
+        }
+
+        function createParticleSystem() {
+            const count = settings.particleCount;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+            const sizes = new Float32Array(count);
+
+            const colorPalette = [
+                new THREE.Color(0x4ecdc4),
+                new THREE.Color(0xe94560),
+                new THREE.Color(0xf39c12),
+                new THREE.Color(0x9b59b6),
+                new THREE.Color(0x2ecc71)
+            ];
+
+            for (let i = 0; i < count; i++) {
+                // Position within cell
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                const r = Math.random() * 7;
+
+                positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i * 3 + 2] = r * Math.cos(phi);
+
+                // Random color from palette
+                const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+
+                sizes[i] = Math.random() * 0.15 + 0.05;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.1,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            particleSystem = new THREE.Points(geometry, material);
+            scene.add(particleSystem);
+        }
+
+        // =====================================================
+        // ANIMATION
+        // =====================================================
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = clock.getElapsedTime();
+            const delta = clock.getDelta();
+
+            // Update membrane shader
+            if (membrane && membrane.material.uniforms) {
+                membrane.material.uniforms.time.value = time;
+                membrane.material.uniforms.waveIntensity.value = settings.waveIntensity;
+            }
+
+            // Animate nucleus
+            if (nucleus) {
+                nucleus.rotation.y = time * 0.1;
+                nucleus.position.y = Math.sin(time * 0.5) * 0.2;
+            }
+
+            // Animate mitochondria
+            mitochondria.forEach((mito, i) => {
+                mito.rotation.x += 0.002 * (i % 2 ? 1 : -1);
+                mito.rotation.z += 0.001;
+                mito.position.y += Math.sin(time + i) * 0.002;
+            });
+
+            // Animate chloroplasts
+            chloroplasts.forEach((chloro, i) => {
+                chloro.rotation.y += 0.003;
+                chloro.position.x += Math.sin(time * 0.3 + i) * 0.003;
+            });
+
+            // Animate particles
+            if (particleSystem) {
+                const positions = particleSystem.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] += Math.sin(time + i) * 0.002;
+                    positions[i + 1] += Math.cos(time + i * 0.5) * 0.002;
+                    positions[i + 2] += Math.sin(time * 0.5 + i) * 0.002;
+
+                    // Keep particles within bounds
+                    const dist = Math.sqrt(
+                        positions[i] ** 2 +
+                        positions[i + 1] ** 2 +
+                        positions[i + 2] ** 2
+                    );
+                    if (dist > 7) {
+                        const scale = 6 / dist;
+                        positions[i] *= scale;
+                        positions[i + 1] *= scale;
+                        positions[i + 2] *= scale;
+                    }
+                }
+                particleSystem.geometry.attributes.position.needsUpdate = true;
+                particleSystem.rotation.y = time * 0.05;
+            }
+
+            // Update controls
+            controls.update();
+
+            // Render with post-processing
+            composer.render();
+
+            // FPS counter
+            frameCount++;
+            if (time - lastFpsTime >= 1) {
+                document.getElementById('fps').textContent = frameCount;
+                frameCount = 0;
+                lastFpsTime = time;
+            }
+        }
+
+        // =====================================================
+        // HELPERS
+        // =====================================================
+
+        function updateStats() {
+            let objCount = 0;
+            let triCount = 0;
+
+            scene.traverse(obj => {
+                if (obj.isMesh) {
+                    objCount++;
+                    if (obj.geometry) {
+                        const geo = obj.geometry;
+                        if (geo.index) {
+                            triCount += geo.index.count / 3;
+                        } else if (geo.attributes.position) {
+                            triCount += geo.attributes.position.count / 3;
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('objCount').textContent = objCount;
+            document.getElementById('triCount').textContent = Math.round(triCount).toLocaleString();
+        }
+
+        function toggleVisibility(component, visible) {
+            switch (component) {
+                case 'membrane':
+                    if (membrane) membrane.visible = visible;
+                    break;
+                case 'nucleus':
+                    if (nucleus) nucleus.visible = visible;
+                    break;
+                case 'mitochondria':
+                    mitochondria.forEach(m => m.visible = visible);
+                    break;
+                case 'er':
+                    erTubes.forEach(t => t.visible = visible);
+                    break;
+                case 'chloroplasts':
+                    chloroplasts.forEach(c => c.visible = visible);
+                    break;
+                case 'particles':
+                    if (particleSystem) particleSystem.visible = visible;
+                    break;
+            }
+        }
+
+        // =====================================================
+        // EVENT LISTENERS
+        // =====================================================
+
+        function setupEventListeners() {
+            // Window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                composer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Bloom slider
+            document.getElementById('bloom').addEventListener('input', (e) => {
+                settings.bloom = parseFloat(e.target.value);
+                document.getElementById('bloomVal').textContent = settings.bloom.toFixed(1);
+                bloomPass.strength = settings.bloom;
+            });
+
+            // Particles slider
+            document.getElementById('particles').addEventListener('input', (e) => {
+                settings.particleCount = parseInt(e.target.value);
+                document.getElementById('particlesVal').textContent = settings.particleCount;
+                // Recreate particle system
+                scene.remove(particleSystem);
+                createParticleSystem();
+            });
+
+            // Wave slider
+            document.getElementById('wave').addEventListener('input', (e) => {
+                settings.waveIntensity = parseFloat(e.target.value);
+                document.getElementById('waveVal').textContent = settings.waveIntensity.toFixed(1);
+            });
+
+            // Toggle buttons
+            document.querySelectorAll('.toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    toggle.classList.toggle('active');
+                    const component = toggle.dataset.toggle;
+                    const isActive = toggle.classList.contains('active');
+                    toggleVisibility(component, isActive);
+                });
+            });
+
+            // View presets
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    settings.currentView = btn.dataset.view;
+                    switchView(settings.currentView);
+                });
+            });
+        }
+
+        function switchView(view) {
+            // Reset camera
+            camera.position.set(0, 5, 20);
+            controls.reset();
+
+            // View-specific settings
+            switch (view) {
+                case 'cell':
+                    // Show all
+                    toggleVisibility('membrane', true);
+                    toggleVisibility('nucleus', true);
+                    toggleVisibility('mitochondria', true);
+                    toggleVisibility('er', true);
+                    toggleVisibility('chloroplasts', true);
+                    break;
+                case 'dna':
+                    // Foco no nucleo mostrando CROMATINA (nao helice!)
+                    // Biologicamente correto: DNA em escala nuclear aparece como
+                    // cromatina difusa, territorios cromossomicos e nucleolo.
+                    // A dupla helice so seria visivel em escala molecular (nm).
+                    toggleVisibility('membrane', false);
+                    toggleVisibility('nucleus', true);
+                    toggleVisibility('mitochondria', false);
+                    toggleVisibility('er', false);
+                    toggleVisibility('chloroplasts', false);
+                    camera.position.set(0, 2, 6);  // Zoom no nucleo
+                    break;
+                case 'infection':
+                    // Show membrane and some organelles
+                    toggleVisibility('membrane', true);
+                    toggleVisibility('nucleus', true);
+                    toggleVisibility('mitochondria', true);
+                    toggleVisibility('er', false);
+                    toggleVisibility('chloroplasts', false);
+                    break;
+                case 'signaling':
+                    // Show ER and particles
+                    toggleVisibility('membrane', true);
+                    toggleVisibility('nucleus', false);
+                    toggleVisibility('mitochondria', false);
+                    toggleVisibility('er', true);
+                    toggleVisibility('chloroplasts', false);
+                    settings.particleCount = 1000;
+                    scene.remove(particleSystem);
+                    createParticleSystem();
+                    break;
+            }
+
+            // Update toggle UI
+            document.querySelectorAll('.toggle').forEach(toggle => {
+                const component = toggle.dataset.toggle;
+                let visible = true;
+                switch (component) {
+                    case 'membrane': visible = membrane?.visible ?? true; break;
+                    case 'nucleus': visible = nucleus?.visible ?? true; break;
+                    case 'mitochondria': visible = mitochondria[0]?.visible ?? true; break;
+                    case 'er': visible = erTubes[0]?.visible ?? true; break;
+                    case 'chloroplasts': visible = chloroplasts[0]?.visible ?? true; break;
+                    case 'particles': visible = particleSystem?.visible ?? true; break;
+                }
+                toggle.classList.toggle('active', visible);
+            });
+        }
+
+
+        // =====================================================
+        // COMPONENT ZOOM & INFO
+        // =====================================================
+
+        const componentData = {
+            nucleus: {
+                name: "Núcleo",
+                description: "Centro de controle da célula. O DNA está organizado como CROMATINA: eucromatina (genes ativos, centro) e heterocromatina (genes silenciados, periferia). Territórios cromossômicos são regiões distintas de cada cromossomo.",
+                genes: ["WRKY33", "NPR1", "MYC2", "TGA1"],
+                function: "Regulação transcricional"
+            },
+            mitochondria: {
+                name: "Mitocôndrias",
+                description: "Usinas de energia celular. Produzem ATP através da respiração.",
+                genes: ["AOX1", "COX1", "ATPASE"],
+                function: "Produção de ATP e ROS"
+            },
+            chloroplasts: {
+                name: "Cloroplastos",
+                description: "Organelas fotossintéticas. Captam luz e produzem açúcares.",
+                genes: ["RBCS", "LHCB", "PSBA"],
+                function: "Fotossíntese"
+            },
+            er: {
+                name: "Retículo Endoplasmático",
+                description: "Rede de membranas para síntese e transporte de proteínas.",
+                genes: ["BIP", "CNX1", "PDI"],
+                function: "Síntese proteica"
+            },
+            membrane: {
+                name: "Membrana Plasmática",
+                description: "Barreira seletiva da célula. Receptores de defesa (PRRs) detectam patógenos.",
+                genes: ["FLS2", "EFR", "BAK1", "BIK1"],
+                function: "Percepção de PAMPs"
+            }
+        };
+
+        // Salvar posição inicial da câmera
+        const initialCameraPos = new THREE.Vector3(15, 10, 20);
+        let activeComponent = null;
+
+        function focusOnComponent(type) {
+            let target;
+
+            switch(type) {
+                case 'nucleus':
+                    target = nucleus?.position;
+                    break;
+                case 'mitochondria':
+                    target = mitochondria[0]?.position;
+                    break;
+                case 'chloroplasts':
+                    target = chloroplasts[0]?.position;
+                    break;
+                case 'er':
+                    target = erTubes[0]?.position || new THREE.Vector3(0, 0, 0);
+                    break;
+                case 'membrane':
+                    target = new THREE.Vector3(0, 0, 0);
+                    break;
+            }
+
+            if (!target) return;
+
+            activeComponent = type;
+
+            // Atualizar UI
+            document.querySelectorAll('.component-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.target === type);
+            });
+
+            // Mostrar info panel
+            updateInfoPanel(componentData[type]);
+
+            // Animar câmera
+            const startPos = camera.position.clone();
+            const offset = type === 'membrane' ? new THREE.Vector3(12, 8, 12) : new THREE.Vector3(6, 4, 6);
+            const endPos = target.clone().add(offset);
+
+            let t = 0;
+            const animateZoom = () => {
+                t += 0.025;
+                if (t >= 1) return;
+
+                camera.position.lerpVectors(startPos, endPos, t);
+                controls.target.lerp(target, t * 0.6);
+                controls.update();
+
+                requestAnimationFrame(animateZoom);
+            };
+            animateZoom();
+        }
+
+        function updateInfoPanel(data) {
+            const panel = document.getElementById('componentInfo');
+            if (!data) {
+                panel.classList.remove('visible');
+                return;
+            }
+
+            panel.innerHTML = `
+                <div class="info-title">${data.name}</div>
+                <div class="info-description">${data.description}</div>
+                <div class="info-field">
+                    <label>Função Principal</label>
+                    <div class="value">${data.function}</div>
+                </div>
+                <div class="info-field">
+                    <label>Genes Relacionados</label>
+                    <div class="gene-tags">
+                        ${data.genes.map(g => `<span class="gene-tag">${g}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            panel.classList.add('visible');
+        }
+
+        function resetView() {
+            activeComponent = null;
+
+            // Limpar seleção
+            document.querySelectorAll('.component-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Esconder info panel
+            document.getElementById('componentInfo').classList.remove('visible');
+
+            // Animar câmera de volta
+            const startPos = camera.position.clone();
+            let t = 0;
+            const animateReset = () => {
+                t += 0.025;
+                if (t >= 1) return;
+
+                camera.position.lerpVectors(startPos, initialCameraPos, t);
+                controls.target.lerp(new THREE.Vector3(0, 0, 0), t * 0.6);
+                controls.update();
+
+                requestAnimationFrame(animateReset);
+            };
+            animateReset();
+        }
+
+        function setupComponentListeners() {
+            // Component items click
+            document.querySelectorAll('.component-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const target = item.dataset.target;
+                    if (componentData[target]) {
+                        focusOnComponent(target);
+                    }
+                });
+            });
+
+            // Reset view button
+            document.getElementById('resetView')?.addEventListener('click', resetView);
+        }
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        init();
+        setupComponentListeners();
+
+    </script>
+</body>
+</html>

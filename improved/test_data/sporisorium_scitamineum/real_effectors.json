@@ -1,0 +1,906 @@
+{
+  "source": "PMC9409688 Table S5",
+  "total": 100,
+  "effectors": [
+    {
+      "gene_id": "SPSC_01337",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 61,
+      "cysteine_percent": 27.86885245901639,
+      "signal_peptide_prob": 5e-06,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01622",
+      "annotation": "Related to DNA2-DNA helicase",
+      "protein_length": 300,
+      "cysteine_percent": 5.0,
+      "signal_peptide_prob": 7e-06,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06457",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 169,
+      "cysteine_percent": 2.9585798816568047,
+      "signal_peptide_prob": 0.999738,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04273",
+      "annotation": "Related to Mig1 protein",
+      "protein_length": 241,
+      "cysteine_percent": 2.904564315352697,
+      "signal_peptide_prob": 0.999132,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04265",
+      "annotation": "Related to Mig1 protein",
+      "protein_length": 176,
+      "cysteine_percent": 2.840909090909091,
+      "signal_peptide_prob": 0.999799,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01739",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 141,
+      "cysteine_percent": 2.8368794326241136,
+      "signal_peptide_prob": 0.999744,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03391",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 110,
+      "cysteine_percent": 2.727272727272727,
+      "signal_peptide_prob": 0.0,
+      "location": "Cytoplasmic",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04761",
+      "annotation": "Alpha-galactosidase",
+      "protein_length": 301,
+      "cysteine_percent": 2.6578073089700998,
+      "signal_peptide_prob": 0.967606,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04271",
+      "annotation": "Probable Mig1 protein, induced during biotrophic phase",
+      "protein_length": 193,
+      "cysteine_percent": 2.5906735751295336,
+      "signal_peptide_prob": 0.999721,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03603",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 161,
+      "cysteine_percent": 2.484472049689441,
+      "signal_peptide_prob": 0.999737,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04270",
+      "annotation": "Related to Mig1-Mig1 protein, induced during biotrophic phase",
+      "protein_length": 203,
+      "cysteine_percent": 2.4630541871921183,
+      "signal_peptide_prob": 0.998484,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04342",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 204,
+      "cysteine_percent": 2.450980392156863,
+      "signal_peptide_prob": 0.968173,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04272",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 214,
+      "cysteine_percent": 2.336448598130841,
+      "signal_peptide_prob": 0.999711,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04111",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 262,
+      "cysteine_percent": 2.2900763358778624,
+      "signal_peptide_prob": 0.999765,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02789",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 396,
+      "cysteine_percent": 2.272727272727273,
+      "signal_peptide_prob": 0.999532,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03260",
+      "annotation": "Pep1",
+      "protein_length": 177,
+      "cysteine_percent": 2.2598870056497176,
+      "signal_peptide_prob": 0.999765,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04535",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 371,
+      "cysteine_percent": 2.15633423180593,
+      "signal_peptide_prob": 0.999762,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03076",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 239,
+      "cysteine_percent": 2.092050209205021,
+      "signal_peptide_prob": 0.999709,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00441",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 391,
+      "cysteine_percent": 2.0460358056265986,
+      "signal_peptide_prob": 0.999752,
+      "location": "Golgi",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00734",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 312,
+      "cysteine_percent": 1.9230769230769231,
+      "signal_peptide_prob": 5e-06,
+      "location": "Cytoplasmic",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03828",
+      "annotation": "Probable small G-protein Ras2",
+      "protein_length": 211,
+      "cysteine_percent": 1.8957345971563981,
+      "signal_peptide_prob": 0.0,
+      "location": "Plasmamembrane",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01638",
+      "annotation": "Flap endonuclease 1",
+      "protein_length": 375,
+      "cysteine_percent": 1.866666666666667,
+      "signal_peptide_prob": 0.0,
+      "location": "Plasmamembrane",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02198",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 221,
+      "cysteine_percent": 1.809954751131222,
+      "signal_peptide_prob": 1.1e-05,
+      "location": "Golgi",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01364",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 118,
+      "cysteine_percent": 1.694915254237288,
+      "signal_peptide_prob": 1e-06,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06629",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 179,
+      "cysteine_percent": 1.675977653631285,
+      "signal_peptide_prob": 0.999761,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06635",
+      "annotation": "Related to MSH6-DNA mismatch repair protein",
+      "protein_length": 120,
+      "cysteine_percent": 1.6666666666666667,
+      "signal_peptide_prob": 0.999736,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00097",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 184,
+      "cysteine_percent": 1.6304347826086956,
+      "signal_peptide_prob": 0.999533,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02316",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 309,
+      "cysteine_percent": 1.6181229773462782,
+      "signal_peptide_prob": 7e-06,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00606",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 125,
+      "cysteine_percent": 1.6,
+      "signal_peptide_prob": 0.0,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01689",
+      "annotation": "Thiamine thiazole synthase",
+      "protein_length": 346,
+      "cysteine_percent": 1.4450867052023122,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05697",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 214,
+      "cysteine_percent": 1.4018691588785046,
+      "signal_peptide_prob": 0.0,
+      "location": "Golgi",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02941",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 216,
+      "cysteine_percent": 1.3888888888888888,
+      "signal_peptide_prob": 0.999741,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06156",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 219,
+      "cysteine_percent": 1.36986301369863,
+      "signal_peptide_prob": 0.999742,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01148",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 373,
+      "cysteine_percent": 1.3404825737265416,
+      "signal_peptide_prob": 0.99973,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02450",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 75,
+      "cysteine_percent": 1.3333333333333335,
+      "signal_peptide_prob": 0.0,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04157",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 151,
+      "cysteine_percent": 1.3245033112582782,
+      "signal_peptide_prob": 0.999672,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01053",
+      "annotation": "Related to hydroxyquinol-1, 2-dioxygenase",
+      "protein_length": 315,
+      "cysteine_percent": 1.2698412698412698,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03144",
+      "annotation": "Related to Oxidoreductase,  short-chain dehydrogenase",
+      "protein_length": 341,
+      "cysteine_percent": 1.1730205278592376,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03548",
+      "annotation": "Probable LEU2-beta-isopropyl-malate dehydrogenase",
+      "protein_length": 380,
+      "cysteine_percent": 1.0526315789473684,
+      "signal_peptide_prob": 0.0,
+      "location": "Cytoplasmic",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05288",
+      "annotation": "Probable UBC6-E2 ubiquitin-conjugating enzyme",
+      "protein_length": 296,
+      "cysteine_percent": 1.0135135135135136,
+      "signal_peptide_prob": 0.0,
+      "location": "Endoplasmicreticulum",
+      "tm_domains": 1
+    },
+    {
+      "gene_id": "SPSC_00843",
+      "annotation": "Probable Alpha-L-arabinofuranosidase",
+      "protein_length": 329,
+      "cysteine_percent": 0.911854103343465,
+      "signal_peptide_prob": 0.999753,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_10005",
+      "annotation": "Uncharcterized protein",
+      "protein_length": 110,
+      "cysteine_percent": 0.9090909090909091,
+      "signal_peptide_prob": 0.99977,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05978",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 225,
+      "cysteine_percent": 0.8888888888888888,
+      "signal_peptide_prob": 0.999743,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03041",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 342,
+      "cysteine_percent": 0.8771929824561403,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 4
+    },
+    {
+      "gene_id": "SPSC_05625",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 342,
+      "cysteine_percent": 0.8771929824561403,
+      "signal_peptide_prob": 6e-06,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05233",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 238,
+      "cysteine_percent": 0.8403361344537815,
+      "signal_peptide_prob": 0.0,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03677",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 122,
+      "cysteine_percent": 0.819672131147541,
+      "signal_peptide_prob": 0.999739,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00559",
+      "annotation": "Related to Transaldolase B",
+      "protein_length": 379,
+      "cysteine_percent": 0.79155672823219,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04367",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 391,
+      "cysteine_percent": 0.7672634271099744,
+      "signal_peptide_prob": 0.006725,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02989",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 294,
+      "cysteine_percent": 0.6802721088435374,
+      "signal_peptide_prob": 0.996715,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01710",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 302,
+      "cysteine_percent": 0.6622516556291391,
+      "signal_peptide_prob": 0.999772,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02155",
+      "annotation": "Related to secreted chorismate mutase",
+      "protein_length": 303,
+      "cysteine_percent": 0.6600660066006601,
+      "signal_peptide_prob": 0.999718,
+      "location": "Endoplasmicreticulum",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01618",
+      "annotation": "Related to AYR1-NADPH-dependent 1-acyl dihydroxyacetone phosphate reductase",
+      "protein_length": 309,
+      "cysteine_percent": 0.6472491909385114,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05348",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 318,
+      "cysteine_percent": 0.628930817610063,
+      "signal_peptide_prob": 0.0,
+      "location": "Cytoplasmic",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05323",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 161,
+      "cysteine_percent": 0.6211180124223602,
+      "signal_peptide_prob": 0.999684,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03541",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 341,
+      "cysteine_percent": 0.5865102639296188,
+      "signal_peptide_prob": 0.390216,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02041",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 172,
+      "cysteine_percent": 0.5813953488372093,
+      "signal_peptide_prob": 3.3e-05,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05116",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 360,
+      "cysteine_percent": 0.5555555555555556,
+      "signal_peptide_prob": 1.00003,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06090",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 361,
+      "cysteine_percent": 0.554016620498615,
+      "signal_peptide_prob": 0.999687,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03006",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 385,
+      "cysteine_percent": 0.5194805194805194,
+      "signal_peptide_prob": 0.999521,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05270",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 201,
+      "cysteine_percent": 0.4975124378109453,
+      "signal_peptide_prob": 0.999779,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04517",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 206,
+      "cysteine_percent": 0.48543689320388345,
+      "signal_peptide_prob": 0.999654,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00084",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 208,
+      "cysteine_percent": 0.4807692307692308,
+      "signal_peptide_prob": 0.940096,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04071",
+      "annotation": "Peptidyl-prolyl cis-trans isomerase",
+      "protein_length": 211,
+      "cysteine_percent": 0.47393364928909953,
+      "signal_peptide_prob": 0.99946,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00607",
+      "annotation": "Probable thioredoxin peroxidase",
+      "protein_length": 222,
+      "cysteine_percent": 0.45045045045045046,
+      "signal_peptide_prob": 2.8e-05,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00095",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 230,
+      "cysteine_percent": 0.43478260869565216,
+      "signal_peptide_prob": 0.999763,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04455",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 253,
+      "cysteine_percent": 0.3952569169960474,
+      "signal_peptide_prob": 1e-06,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02107",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 258,
+      "cysteine_percent": 0.3875968992248062,
+      "signal_peptide_prob": 0.981589,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04516",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 294,
+      "cysteine_percent": 0.3401360544217687,
+      "signal_peptide_prob": 0.999761,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02940",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 294,
+      "cysteine_percent": 0.3401360544217687,
+      "signal_peptide_prob": 0.999752,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02566",
+      "annotation": "Related to ERJ5-Type I membrane protein preserves the folding capacity of the endoplasmic reticulum",
+      "protein_length": 345,
+      "cysteine_percent": 0.2898550724637681,
+      "signal_peptide_prob": 0.999717,
+      "location": "Mitochondrial",
+      "tm_domains": 1
+    },
+    {
+      "gene_id": "SPSC_03543",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 378,
+      "cysteine_percent": 0.26455026455026454,
+      "signal_peptide_prob": 0.000232,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05858",
+      "annotation": "Related to Phosducin",
+      "protein_length": 380,
+      "cysteine_percent": 0.2631578947368421,
+      "signal_peptide_prob": 0.0,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04519",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 151,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999666,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06003",
+      "annotation": "Transcription and mRNA export factor SUS1",
+      "protein_length": 190,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999693,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_10007",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 124,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999582,
+      "location": "Peroxisomal",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06088",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 318,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999651,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06085",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 184,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999674,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05105",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 338,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.607632,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06073",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 258,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.0,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_02106",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 344,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999753,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05321",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 317,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999743,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06087",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 166,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999746,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05603",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 354,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.001779,
+      "location": "Nuclear",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01554",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 240,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999503,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06151",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 280,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.99973,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06094",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 151,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999799,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06630",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 123,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999764,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00088",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 279,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999619,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00750",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 169,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.985393,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_10006",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 130,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999743,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_03542",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 370,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.99977,
+      "location": "Golgi",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_06205",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 314,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999746,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_04518",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 284,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.99975,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05108",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 225,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999758,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01502",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 208,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999777,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_01501",
+      "annotation": "Related to Effector family protein Eff1",
+      "protein_length": 221,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999707,
+      "location": "Mitochondrial",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_00571",
+      "annotation": "Uncharacterized protein",
+      "protein_length": 113,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.0,
+      "location": "Golgi",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05327",
+      "annotation": "Uncharcterized protein",
+      "protein_length": 167,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 0.999746,
+      "location": "Extracellular(Secreted)",
+      "tm_domains": 0
+    },
+    {
+      "gene_id": "SPSC_05511",
+      "annotation": "Uncharcterized protein",
+      "protein_length": 130,
+      "cysteine_percent": 0.0,
+      "signal_peptide_prob": 3e-06,
+      "location": "Nuclear",
+      "tm_domains": 0
+    }
+  ]
+}

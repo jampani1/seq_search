@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRN Explorer - Bioinformatics Hub</title>
+
+    <!-- Cytoscape.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #16213e;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e94560;
+        }
+
+        header h1 {
+            font-size: 1.3rem;
+            color: #e94560;
+        }
+
+        header h1 span {
+            color: #4ecca3;
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        input[type="text"], input[type="number"], select {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            color: #eee;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #ff6b8a;
+        }
+
+        button.secondary {
+            background: #0f3460;
+        }
+
+        button.active {
+            background: #4ecca3;
+            color: #1a1a2e;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Left Panel - Exploration Tools */
+        .left-panel {
+            width: 280px;
+            background: #16213e;
+            border-right: 1px solid #0f3460;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .panel-section {
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .panel-section h3 {
+            color: #e94560;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #0f3460;
+        }
+
+        .panel-section h3.green {
+            color: #4ecca3;
+        }
+
+        /* View Mode Buttons */
+        .view-modes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .view-modes button {
+            flex: 1;
+            min-width: 80px;
+            font-size: 0.75rem;
+            padding: 6px 8px;
+        }
+
+        /* Hub List */
+        .hub-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .hub-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 3px 0;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .hub-item:hover {
+            background: rgba(233, 69, 96, 0.3);
+        }
+
+        .hub-item.selected {
+            background: #e94560;
+        }
+
+        .hub-item .degree {
+            background: #4ecca3;
+            color: #1a1a2e;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        /* Filter Controls */
+        .filter-control {
+            margin: 10px 0;
+        }
+
+        .filter-control label {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .filter-control input[type="range"] {
+            width: 100%;
+            accent-color: #e94560;
+        }
+
+        .filter-control .range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .filter-value {
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        /* Cytoscape Container */
+        #cy {
+            flex: 1;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1e 100%);
+        }
+
+        /* Right Panel - Info */
+        .right-panel {
+            width: 260px;
+            background: #16213e;
+            border-left: 1px solid #0f3460;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-value {
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        /* Node Info */
+        #node-info {
+            margin-top: 15px;
+        }
+
+        #node-info h4 {
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .info-field {
+            margin: 8px 0;
+        }
+
+        .info-field label {
+            color: #888;
+            font-size: 0.75rem;
+            display: block;
+        }
+
+        .info-field value {
+            font-size: 0.9rem;
+        }
+
+        /* Neighbors List */
+        .neighbors-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+
+        .neighbor-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 6px;
+            font-size: 0.8rem;
+            background: rgba(0,0,0,0.2);
+            margin: 2px 0;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .neighbor-item:hover {
+            background: rgba(78, 204, 163, 0.3);
+        }
+
+        .neighbor-item .weight {
+            color: #888;
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+        }
+
+        .legend h4 {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            margin: 4px 0;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(22, 33, 62, 0.95);
+            padding: 30px 50px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .loading.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #0f3460;
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Quick search */
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding-right: 30px;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            border-radius: 4px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result {
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .search-result:hover {
+            background: rgba(233, 69, 96, 0.3);
+        }
+
+        /* View indicator */
+        .view-indicator {
+            background: #e94560;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GRN Explorer <span>- Ferramenta de Exploracao</span></h1>
+        <div class="controls">
+            <div class="control-group">
+                <label>API:</label>
+                <input type="text" id="api-url" value="http://localhost:8000" style="width: 150px;">
+            </div>
+            <div class="control-group">
+                <label>Network:</label>
+                <input type="number" id="network-id" value="1" style="width: 50px;">
+            </div>
+            <button id="btn-load">Carregar</button>
+            <button id="btn-reset" class="secondary">Reset</button>
+            <div class="control-group">
+                <label>Layout:</label>
+                <select id="layout-select">
+                    <option value="cose">Force</option>
+                    <option value="concentric">Concentric</option>
+                    <option value="circle">Circle</option>
+                    <option value="grid">Grid</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Panel - Exploration -->
+        <aside class="left-panel">
+            <div class="panel-section">
+                <h3>Modo de Visualizacao</h3>
+                <div class="view-modes">
+                    <button id="view-all" class="active">Tudo</button>
+                    <button id="view-hubs">Hubs</button>
+                    <button id="view-top20">Top 20</button>
+                    <button id="view-ego">Ego Net</button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3 class="green">Top Hubs (Mais Conectados)</h3>
+                <div class="hub-list" id="hub-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>Filtros</h3>
+
+                <div class="filter-control">
+                    <label>Peso Minimo das Edges: <span class="filter-value" id="weight-value">0.00</span></label>
+                    <input type="range" id="weight-filter" min="0" max="1" step="0.05" value="0">
+                    <div class="range-labels">
+                        <span>0</span>
+                        <span>0.5</span>
+                        <span>1.0</span>
+                    </div>
+                </div>
+
+                <div class="filter-control">
+                    <label>Grau Minimo do Node: <span class="filter-value" id="degree-value">0</span></label>
+                    <input type="range" id="degree-filter" min="0" max="30" step="1" value="0">
+                </div>
+
+                <div class="filter-control">
+                    <label>Top N Edges:</label>
+                    <select id="top-edges">
+                        <option value="0">Todas</option>
+                        <option value="10">Top 10</option>
+                        <option value="20">Top 20</option>
+                        <option value="50" selected>Top 50</option>
+                        <option value="100">Top 100</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <h3>Buscar Gene</h3>
+                <div class="search-box">
+                    <input type="text" id="gene-search" placeholder="Digite o ID...">
+                    <div class="search-results" id="search-results"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Graph -->
+        <div id="cy"></div>
+
+        <!-- Right Panel - Info -->
+        <aside class="right-panel">
+            <div class="panel-section">
+                <h3>Estatisticas</h3>
+                <div class="stat-row">
+                    <span>Nodes Visiveis</span>
+                    <span class="stat-value" id="stat-nodes">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Edges Visiveis</span>
+                    <span class="stat-value" id="stat-edges">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Total Nodes</span>
+                    <span class="stat-value" id="stat-total-nodes">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Total Edges</span>
+                    <span class="stat-value" id="stat-total-edges">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Densidade</span>
+                    <span class="stat-value" id="stat-density">0</span>
+                </div>
+            </div>
+
+            <div class="panel-section" id="node-info" style="display:none;">
+                <h3>Node Selecionado</h3>
+                <div class="info-field">
+                    <label>ID</label>
+                    <value id="info-id">-</value>
+                </div>
+                <div class="info-field">
+                    <label>Label</label>
+                    <value id="info-label">-</value>
+                </div>
+                <div class="info-field">
+                    <label>Conexoes</label>
+                    <value id="info-degree">-</value>
+                </div>
+                <div class="info-field">
+                    <label>Tipo</label>
+                    <value id="info-type">-</value>
+                </div>
+
+                <h4 style="margin-top: 12px; font-size: 0.85rem; color: #4ecca3;">Vizinhos</h4>
+                <div class="neighbors-list" id="neighbors-list"></div>
+            </div>
+
+            <div class="legend">
+                <h4>LEGENDA</h4>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e94560;"></div>
+                    <span>Hub Gene (alto grau)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4ecca3;"></div>
+                    <span>Gene Regular</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3498db;"></div>
+                    <span>Correlacao Positiva</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span>Correlacao Negativa</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Carregando rede...</p>
+    </div>
+
+    <script>
+        // =============================================
+        // GLOBAL STATE
+        // =============================================
+
+        let allNodes = [];
+        let allEdges = [];
+        let currentView = 'all';
+        let selectedNode = null;
+
+        // =============================================
+        // CYTOSCAPE INIT
+        // =============================================
+
+        let cy = cytoscape({
+            container: document.getElementById('cy'),
+
+            style: [
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#4ecca3',
+                        'label': 'data(label)',
+                        'color': '#fff',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'font-size': '9px',
+                        'width': 'mapData(degree, 1, 25, 25, 70)',
+                        'height': 'mapData(degree, 1, 25, 25, 70)',
+                        'border-width': 2,
+                        'border-color': '#16213e',
+                        'text-outline-width': 2,
+                        'text-outline-color': '#16213e'
+                    }
+                },
+                {
+                    selector: 'node.hub',
+                    style: {
+                        'background-color': '#e94560',
+                        'font-weight': 'bold'
+                    }
+                },
+                {
+                    selector: 'node:selected',
+                    style: {
+                        'border-width': 4,
+                        'border-color': '#f1c40f',
+                        'background-color': '#f1c40f'
+                    }
+                },
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 'mapData(weight, 0, 1, 1, 4)',
+                        'line-color': '#3498db',
+                        'target-arrow-color': '#3498db',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'opacity': 0.6
+                    }
+                },
+                {
+                    selector: 'edge.negative',
+                    style: {
+                        'line-color': '#e74c3c',
+                        'target-arrow-color': '#e74c3c'
+                    }
+                },
+                {
+                    selector: '.highlighted',
+                    style: {
+                        'background-color': '#f1c40f',
+                        'line-color': '#f1c40f',
+                        'target-arrow-color': '#f1c40f',
+                        'opacity': 1
+                    }
+                },
+                {
+                    selector: '.faded',
+                    style: {
+                        'opacity': 0.1
+                    }
+                },
+                {
+                    selector: '.hidden',
+                    style: {
+                        'display': 'none'
+                    }
+                }
+            ],
+
+            layout: { name: 'cose' },
+            minZoom: 0.1,
+            maxZoom: 3,
+            wheelSensitivity: 0.3
+        });
+
+        // =============================================
+        // DATA LOADING
+        // =============================================
+
+        async function loadNetwork() {
+            const apiUrl = document.getElementById('api-url').value;
+            const networkId = document.getElementById('network-id').value;
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${apiUrl}/api/v1/grn/${networkId}/graph`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                processData(data);
+                showLoading(false);
+
+            } catch (error) {
+                console.error(error);
+                showLoading(false);
+                alert('Erro ao carregar. Verifique se o backend esta rodando.');
+            }
+        }
+
+        function processData(data) {
+            cy.elements().remove();
+            allNodes = [];
+            allEdges = [];
+
+            const degrees = {};
+
+            // Calculate degrees
+            (data.elements?.edges || []).forEach(edge => {
+                const src = edge.data.source;
+                const tgt = edge.data.target;
+                degrees[src] = (degrees[src] || 0) + 1;
+                degrees[tgt] = (degrees[tgt] || 0) + 1;
+            });
+
+            // Process nodes
+            (data.elements?.nodes || []).forEach(node => {
+                const degree = degrees[node.data.id] || 0;
+                allNodes.push({
+                    group: 'nodes',
+                    data: {
+                        ...node.data,
+                        degree: degree
+                    },
+                    classes: degree >= 10 ? 'hub' : ''
+                });
+            });
+
+            // Process edges with weights
+            (data.elements?.edges || []).forEach(edge => {
+                const weight = Math.abs(edge.data.weight || 0.5);
+                allEdges.push({
+                    group: 'edges',
+                    data: {
+                        ...edge.data,
+                        weight: weight,
+                        originalWeight: edge.data.weight || 0.5
+                    },
+                    classes: (edge.data.weight || 0) < 0 ? 'negative' : ''
+                });
+            });
+
+            // Sort edges by weight for filtering
+            allEdges.sort((a, b) => b.data.weight - a.data.weight);
+
+            // Update stats
+            document.getElementById('stat-total-nodes').textContent = allNodes.length;
+            document.getElementById('stat-total-edges').textContent = allEdges.length;
+
+            // Update degree filter max
+            const maxDegree = Math.max(...allNodes.map(n => n.data.degree));
+            document.getElementById('degree-filter').max = maxDegree;
+
+            // Populate hub list
+            populateHubList();
+
+            // Apply initial view (Top 50 edges by default)
+            applyFilters();
+        }
+
+        // =============================================
+        // HUB LIST
+        // =============================================
+
+        function populateHubList() {
+            const hubList = document.getElementById('hub-list');
+            hubList.innerHTML = '';
+
+            // Sort by degree
+            const sorted = [...allNodes].sort((a, b) => b.data.degree - a.data.degree);
+            const top10 = sorted.slice(0, 10);
+
+            top10.forEach(node => {
+                const item = document.createElement('div');
+                item.className = 'hub-item';
+                item.innerHTML = `
+                    <span>${node.data.label || node.data.id}</span>
+                    <span class="degree">${node.data.degree}</span>
+                `;
+                item.onclick = () => focusOnNode(node.data.id);
+                hubList.appendChild(item);
+            });
+        }
+
+        // =============================================
+        // VIEW MODES
+        // =============================================
+
+        function setViewMode(mode) {
+            currentView = mode;
+
+            // Update buttons
+            document.querySelectorAll('.view-modes button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('view-' + mode.replace('top20', 'top20').replace('ego', 'ego')).classList.add('active');
+
+            applyFilters();
+        }
+
+        // =============================================
+        // FILTERING
+        // =============================================
+
+        function applyFilters() {
+            const minWeight = parseFloat(document.getElementById('weight-filter').value);
+            const minDegree = parseInt(document.getElementById('degree-filter').value);
+            const topN = parseInt(document.getElementById('top-edges').value);
+
+            document.getElementById('weight-value').textContent = minWeight.toFixed(2);
+            document.getElementById('degree-value').textContent = minDegree;
+
+            cy.elements().remove();
+
+            let nodesToShow = new Set();
+            let edgesToShow = [];
+
+            // Filter edges
+            let filteredEdges = allEdges.filter(e => e.data.weight >= minWeight);
+
+            // Apply Top N if set
+            if (topN > 0) {
+                filteredEdges = filteredEdges.slice(0, topN);
+            }
+
+            // Determine nodes based on view mode
+            if (currentView === 'all') {
+                // All nodes from filtered edges
+                filteredEdges.forEach(e => {
+                    nodesToShow.add(e.data.source);
+                    nodesToShow.add(e.data.target);
+                });
+                edgesToShow = filteredEdges;
+
+            } else if (currentView === 'hubs') {
+                // Only hub nodes and their connections
+                const hubs = new Set(allNodes.filter(n => n.data.degree >= 10).map(n => n.data.id));
+                filteredEdges.forEach(e => {
+                    if (hubs.has(e.data.source) || hubs.has(e.data.target)) {
+                        nodesToShow.add(e.data.source);
+                        nodesToShow.add(e.data.target);
+                        edgesToShow.push(e);
+                    }
+                });
+
+            } else if (currentView === 'top20') {
+                // Top 20 edges only
+                edgesToShow = filteredEdges.slice(0, 20);
+                edgesToShow.forEach(e => {
+                    nodesToShow.add(e.data.source);
+                    nodesToShow.add(e.data.target);
+                });
+
+            } else if (currentView === 'ego' && selectedNode) {
+                // Ego network - selected node + neighbors
+                nodesToShow.add(selectedNode);
+                filteredEdges.forEach(e => {
+                    if (e.data.source === selectedNode || e.data.target === selectedNode) {
+                        nodesToShow.add(e.data.source);
+                        nodesToShow.add(e.data.target);
+                        edgesToShow.push(e);
+                    }
+                });
+            }
+
+            // Apply degree filter
+            if (minDegree > 0) {
+                nodesToShow = new Set([...nodesToShow].filter(id => {
+                    const node = allNodes.find(n => n.data.id === id);
+                    return node && node.data.degree >= minDegree;
+                }));
+                // Re-filter edges
+                edgesToShow = edgesToShow.filter(e =>
+                    nodesToShow.has(e.data.source) && nodesToShow.has(e.data.target)
+                );
+            }
+
+            // Add filtered nodes
+            const filteredNodes = allNodes.filter(n => nodesToShow.has(n.data.id));
+            cy.add(filteredNodes);
+            cy.add(edgesToShow);
+
+            // Update visible stats
+            document.getElementById('stat-nodes').textContent = cy.nodes().length;
+            document.getElementById('stat-edges').textContent = cy.edges().length;
+
+            const n = cy.nodes().length;
+            const e = cy.edges().length;
+            const density = n > 1 ? (e / (n * (n - 1))).toFixed(4) : 0;
+            document.getElementById('stat-density').textContent = density;
+
+            // Run layout
+            runLayout();
+        }
+
+        // =============================================
+        // LAYOUT
+        // =============================================
+
+        function runLayout() {
+            const layoutName = document.getElementById('layout-select').value;
+
+            let options = { name: layoutName, animate: true };
+
+            if (layoutName === 'cose') {
+                options = {
+                    name: 'cose',
+                    nodeRepulsion: 8000,
+                    idealEdgeLength: 80,
+                    animate: true,
+                    randomize: false,
+                    numIter: 500
+                };
+            } else if (layoutName === 'concentric') {
+                options = {
+                    name: 'concentric',
+                    concentric: node => node.data('degree') || 0,
+                    levelWidth: () => 2,
+                    animate: true
+                };
+            }
+
+            cy.layout(options).run();
+        }
+
+        // =============================================
+        // NODE INTERACTIONS
+        // =============================================
+
+        function focusOnNode(nodeId) {
+            selectedNode = nodeId;
+
+            // Update hub list selection
+            document.querySelectorAll('.hub-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            const node = cy.getElementById(nodeId);
+            if (node.length > 0) {
+                cy.nodes().unselect();
+                node.select();
+                showNodeInfo(node);
+                highlightNeighbors(node);
+                cy.animate({
+                    center: { eles: node },
+                    zoom: 1.5
+                }, { duration: 500 });
+            } else {
+                // Node not visible, switch to ego view
+                setViewMode('ego');
+            }
+        }
+
+        function showNodeInfo(node) {
+            const data = node.data();
+            document.getElementById('node-info').style.display = 'block';
+            document.getElementById('info-id').textContent = data.id;
+            document.getElementById('info-label').textContent = data.label || data.id;
+            document.getElementById('info-degree').textContent = data.degree;
+            document.getElementById('info-type').textContent = data.degree >= 10 ? 'Hub' : 'Regular';
+
+            // Show neighbors
+            const neighborsList = document.getElementById('neighbors-list');
+            neighborsList.innerHTML = '';
+
+            const neighbors = node.neighborhood('node');
+            neighbors.forEach(n => {
+                const edge = cy.edges().filter(e =>
+                    (e.source().id() === node.id() && e.target().id() === n.id()) ||
+                    (e.target().id() === node.id() && e.source().id() === n.id())
+                );
+                const weight = edge.length > 0 ? edge[0].data('originalWeight') : 0;
+
+                const item = document.createElement('div');
+                item.className = 'neighbor-item';
+                item.innerHTML = `
+                    <span>${n.data('label') || n.id()}</span>
+                    <span class="weight">${weight.toFixed(2)}</span>
+                `;
+                item.onclick = () => focusOnNode(n.id());
+                neighborsList.appendChild(item);
+            });
+        }
+
+        function highlightNeighbors(node) {
+            cy.elements().removeClass('highlighted faded');
+            const neighborhood = node.neighborhood().add(node);
+            cy.elements().addClass('faded');
+            neighborhood.removeClass('faded').addClass('highlighted');
+        }
+
+        function clearHighlight() {
+            cy.elements().removeClass('highlighted faded');
+        }
+
+        // =============================================
+        // SEARCH
+        // =============================================
+
+        document.getElementById('gene-search').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const results = document.getElementById('search-results');
+
+            if (search.length < 2) {
+                results.classList.remove('show');
+                return;
+            }
+
+            const matches = allNodes.filter(n =>
+                n.data.id.toLowerCase().includes(search) ||
+                (n.data.label && n.data.label.toLowerCase().includes(search))
+            ).slice(0, 8);
+
+            if (matches.length > 0) {
+                results.innerHTML = matches.map(n => `
+                    <div class="search-result" data-id="${n.data.id}">
+                        ${n.data.label || n.data.id} (${n.data.degree} conexoes)
+                    </div>
+                `).join('');
+                results.classList.add('show');
+
+                results.querySelectorAll('.search-result').forEach(r => {
+                    r.onclick = () => {
+                        focusOnNode(r.dataset.id);
+                        results.classList.remove('show');
+                        document.getElementById('gene-search').value = '';
+                    };
+                });
+            } else {
+                results.classList.remove('show');
+            }
+        });
+
+        // =============================================
+        // EVENT LISTENERS
+        // =============================================
+
+        cy.on('tap', 'node', function(evt) {
+            const node = evt.target;
+            selectedNode = node.id();
+            showNodeInfo(node);
+            highlightNeighbors(node);
+        });
+
+        cy.on('tap', function(evt) {
+            if (evt.target === cy) {
+                clearHighlight();
+                document.getElementById('node-info').style.display = 'none';
+                selectedNode = null;
+            }
+        });
+
+        document.getElementById('btn-load').addEventListener('click', loadNetwork);
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            cy.fit();
+            clearHighlight();
+            document.getElementById('node-info').style.display = 'none';
+        });
+
+        document.getElementById('layout-select').addEventListener('change', runLayout);
+        document.getElementById('weight-filter').addEventListener('input', applyFilters);
+        document.getElementById('degree-filter').addEventListener('input', applyFilters);
+        document.getElementById('top-edges').addEventListener('change', applyFilters);
+
+        document.getElementById('view-all').addEventListener('click', () => setViewMode('all'));
+        document.getElementById('view-hubs').addEventListener('click', () => setViewMode('hubs'));
+        document.getElementById('view-top20').addEventListener('click', () => setViewMode('top20'));
+        document.getElementById('view-ego').addEventListener('click', () => {
+            if (!selectedNode && allNodes.length > 0) {
+                // Select top hub by default
+                const topHub = [...allNodes].sort((a, b) => b.data.degree - a.data.degree)[0];
+                selectedNode = topHub.data.id;
+            }
+            setViewMode('ego');
+        });
+
+        // =============================================
+        // UI HELPERS
+        // =============================================
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('hidden', !show);
+        }
+
+        // =============================================
+        // INITIALIZATION
+        // =============================================
+
+        showLoading(false);
+
+        // Auto-load
+        setTimeout(() => {
+            fetch('http://localhost:8000/health')
+                .then(r => r.ok && loadNetwork())
+                .catch(() => console.log('API offline'));
+        }, 300);
+    </script>
+</body>
+</html>

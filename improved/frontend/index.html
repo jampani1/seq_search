@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioinformatics Hub - Tools for Scientists</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: #1a1a3a;
+            --accent-cyan: #4ecdc4;
+            --accent-pink: #e94560;
+            --accent-yellow: #f39c12;
+            --accent-purple: #9b59b6;
+            --accent-green: #2ecc71;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(233, 69, 96, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--accent-cyan);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+            border-radius: 2px;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Feature Card */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--card-accent, var(--accent-cyan)), transparent);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--card-accent, var(--accent-cyan));
+            box-shadow: 0 10px 40px rgba(78, 205, 196, 0.2);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .tag.new {
+            background: var(--accent-pink);
+            color: white;
+        }
+
+        .tag.wip {
+            background: var(--accent-yellow);
+            color: #000;
+        }
+
+        /* Card variants */
+        .card.cyan { --card-accent: var(--accent-cyan); }
+        .card.pink { --card-accent: var(--accent-pink); }
+        .card.yellow { --card-accent: var(--accent-yellow); }
+        .card.purple { --card-accent: var(--accent-purple); }
+        .card.green { --card-accent: var(--accent-green); }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(233, 69, 96, 0.1));
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Quick Links */
+        .quick-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .quick-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .quick-link:hover {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1>Bioinformatics Hub</h1>
+        <p class="subtitle">Tools for Scientists - Visualizacao de Dados Biologicos</p>
+        <span class="badge">N. benthamiana Edition</span>
+
+        <div class="stats-row">
+            <div class="stat">
+                <div class="stat-value">61k+</div>
+                <div class="stat-label">Genes</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">36</div>
+                <div class="stat-label">Genes de Defesa</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">3k+</div>
+                <div class="stat-label">Efetores</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Visualizacoes</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Info Box -->
+        <div class="info-box">
+            <h3>Bem-vindo ao Hub!</h3>
+            <p>
+                Este e o ponto central para todas as ferramentas de visualizacao biologica.
+                Escolha uma categoria abaixo para comecar a explorar dados de <strong>Nicotiana benthamiana</strong>.
+            </p>
+            <div class="quick-links">
+                <a href="../docs/FEATURES.md" class="quick-link">Documentacao</a>
+                <a href="../docs/BIOLOGIC.md" class="quick-link">Fundamentos Biologicos</a>
+                <a href="../data/DATA_SOURCES.md" class="quick-link">Fontes de Dados</a>
+            </div>
+        </div>
+
+        <!-- Visualizacao Celular -->
+        <section class="section">
+            <h2 class="section-title">Visualizacao Celular 3D</h2>
+            <div class="cards-grid">
+                <a href="cell_viewer_premium.html" class="card pink">
+                    <div class="card-icon">✨</div>
+                    <h3 class="card-title">Cell Viewer - Premium</h3>
+                    <p class="card-description">
+                        Efeitos avancados: bloom, shaders customizados, particulas.
+                        Visual bioluminescente inspirado em referencias artisticas.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Post-processing</span>
+                        <span class="tag">Shaders</span>
+                        <span class="tag new">Novo</span>
+                    </div>
+                </a>
+
+                <a href="cell_simulator.html" class="card yellow">
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Simulador de Consequencias</h3>
+                    <p class="card-description">
+                        Selecione genes, ajuste regulacao e visualize consequencias
+                        celulares em tempo real. Integrado com GRN.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Simulacao</span>
+                        <span class="tag">GRN</span>
+                        <span class="tag wip">Em desenvolvimento</span>
+                    </div>
+                </a>
+
+                <a href="organelle_gallery.html" class="card green">
+                    <div class="card-icon">📐</div>
+                    <h3 class="card-title">Galeria de Organelas</h3>
+                    <p class="card-description">
+                        Biblioteca matematica de geometrias para organelas.
+                        Simplex Noise, L-Systems, curvas parametricas.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Matematica</span>
+                        <span class="tag">Geometria</span>
+                        <span class="tag new">Novo</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Redes GRN -->
+        <section class="section">
+            <h2 class="section-title">Redes de Regulacao Genica (GRN)</h2>
+            <div class="cards-grid">
+                <a href="grn_viewer.html" class="card cyan">
+                    <div class="card-icon">🕸️</div>
+                    <h3 class="card-title">GRN Viewer 2D</h3>
+                    <p class="card-description">
+                        Visualizacao classica de redes usando Cytoscape.js.
+                        Layout organico, zoom e pan.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Cytoscape</span>
+                        <span class="tag">2D</span>
+                    </div>
+                </a>
+
+                <a href="grn_viewer_3d.html" class="card green">
+                    <div class="card-icon">🌐</div>
+                    <h3 class="card-title">GRN Viewer 3D</h3>
+                    <p class="card-description">
+                        Rede em 3 dimensoes com forcas fisicas.
+                        Ideal para apresentacoes e exploracao imersiva.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Three.js</span>
+                        <span class="tag">3D</span>
+                    </div>
+                </a>
+
+                <a href="grn_explorer.html" class="card purple">
+                    <div class="card-icon">🔍</div>
+                    <h3 class="card-title">GRN Explorer</h3>
+                    <p class="card-description">
+                        Explorer avancado com filtros, busca, modos de visualizacao.
+                        Analise detalhada de redes densas.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Filtros</span>
+                        <span class="tag">Analise</span>
+                        <span class="tag">Busca</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Dados -->
+        <section class="section">
+            <h2 class="section-title">Dados e Documentacao</h2>
+            <div class="cards-grid">
+                <a href="../data/processed/defense_network.json" class="card cyan" target="_blank">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Rede de Defesa</h3>
+                    <p class="card-description">
+                        36 genes de defesa vegetal com 31 interacoes.
+                        Formato JSON pronto para uso.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">JSON</span>
+                        <span class="tag">36 genes</span>
+                    </div>
+                </a>
+
+                <a href="../docs/NBENTHAMIANA_DATABASE.md" class="card green" target="_blank">
+                    <div class="card-icon">🧬</div>
+                    <h3 class="card-title">Database N. benthamiana</h3>
+                    <p class="card-description">
+                        Compilacao completa de dados do organismo modelo.
+                        Genoma, defesa, efetores, vias metabolicas.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Documentacao</span>
+                        <span class="tag">Referencia</span>
+                    </div>
+                </a>
+
+                <a href="../docs/APRENDIZAGEM.md" class="card yellow" target="_blank">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">Diario de Aprendizagem</h3>
+                    <p class="card-description">
+                        Historico tecnico do desenvolvimento.
+                        Decisoes arquiteturais e licoes aprendidas.
+                    </p>
+                    <div class="card-tags">
+                        <span class="tag">Tecnico</span>
+                        <span class="tag">Historico</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            <strong>Bioinformatics Hub</strong> - Tools for Scientists<br>
+            Desenvolvido por <a href="mailto:mjampani@usp.br">Mauricio Jampani de Souza</a><br>
+            Organismo modelo: <em>Nicotiana benthamiana</em>
+        </p>
+        <p style="margin-top: 15px; opacity: 0.5;">
+            Versao 0.6.5 | 2026-03-06 | Timelapse de infeccao
+        </p>
+    </footer>
+</body>
+</html>

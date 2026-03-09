@@ -1,0 +1,165 @@
+# ============================================
+# Bioinformatics Hub - Git Ignore
+# ============================================
+
+# ============================================
+# PYTHON
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# ============================================
+# ENVIRONMENT & SECRETS
+# ============================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+secrets/
+
+# ============================================
+# IDE & EDITORS
+# ============================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# ============================================
+# TESTING
+# ============================================
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.hypothesis/
+
+# ============================================
+# JUPYTER
+# ============================================
+.ipynb_checkpoints/
+
+# ============================================
+# DATA & UPLOADS
+# ============================================
+uploads/
+results/
+*.fasta
+*.fa
+*.fna
+*.faa
+*.fastq
+*.fq
+*.bam
+*.sam
+*.vcf
+*.gff
+*.gtf
+*.bed
+
+# Mas manter estrutura de pastas
+!uploads/.gitkeep
+!results/.gitkeep
+
+# ============================================
+# DATABASES (local)
+# ============================================
+databases/blast/*
+databases/diamond/*
+databases/phi_base/*.fas
+databases/phi_base/*.p*
+databases/pfam/*.hmm
+*.db
+*.sqlite
+*.dmnd
+*.phr
+*.pin
+*.psq
+
+# Manter estrutura
+!databases/blast/.gitkeep
+!databases/diamond/.gitkeep
+
+# ============================================
+# TEST DATA
+# ============================================
+# Ignorar arquivos grandes baixados
+test_data/**/proteome.faa
+test_data/**/cds.fna
+test_data/**/annotation.gff
+test_data/**/expression/*.tar
+test_data/**/expression/*.gz
+
+# Mas manter arquivos de amostra e documentação
+!test_data/README.md
+!test_data/**/sample_*.faa
+!test_data/**/.gitkeep
+
+# ============================================
+# DOCKER
+# ============================================
+# Não ignorar docker-compose.yml
+*.log
+
+# ============================================
+# NODE/FRONTEND
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+.next/
+out/
+
+# ============================================
+# OS
+# ============================================
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# ============================================
+# SENSITIVE DATA & PERSONAL
+# ============================================
+# Nunca commitar dados sensíveis de pesquisa
+TCC_*.pdf
+*.tcc
+private/
+confidential/
+
+# Documento pessoal de aprendizado
+APRENDIZAGEM.md

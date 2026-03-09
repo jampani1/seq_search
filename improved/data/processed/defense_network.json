@@ -1,0 +1,475 @@
+{
+  "genes": [
+    {
+      "id": "FLS2",
+      "name": "Flagellin Sensing 2",
+      "category": "PRR",
+      "location": "membrane",
+      "description": "Receptor de flagelina bacteriana"
+    },
+    {
+      "id": "EFR",
+      "name": "EF-Tu Receptor",
+      "category": "PRR",
+      "location": "membrane",
+      "description": "Receptor de EF-Tu bacteriano"
+    },
+    {
+      "id": "CERK1",
+      "name": "Chitin Elicitor Receptor Kinase 1",
+      "category": "PRR",
+      "location": "membrane",
+      "description": "Receptor de quitina fungica"
+    },
+    {
+      "id": "BAK1",
+      "name": "BRI1-Associated Kinase 1",
+      "category": "PRR",
+      "location": "membrane",
+      "description": "Co-receptor universal de PRRs"
+    },
+    {
+      "id": "BIK1",
+      "name": "Botrytis-Induced Kinase 1",
+      "category": "RLCK",
+      "location": "membrane",
+      "description": "Quinase ativada por PRRs"
+    },
+    {
+      "id": "MEKK1",
+      "name": "MAPKKK 1",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPKKK da cascata MPK4"
+    },
+    {
+      "id": "MKK1",
+      "name": "MAP Kinase Kinase 1",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPKK upstream de MPK4"
+    },
+    {
+      "id": "MKK4",
+      "name": "MAP Kinase Kinase 4",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPKK upstream de MPK3/6"
+    },
+    {
+      "id": "MKK5",
+      "name": "MAP Kinase Kinase 5",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPKK upstream de MPK3/6"
+    },
+    {
+      "id": "MPK3",
+      "name": "MAP Kinase 3",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPK de defesa, fosforila WRKYs"
+    },
+    {
+      "id": "MPK4",
+      "name": "MAP Kinase 4",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPK regulador negativo"
+    },
+    {
+      "id": "MPK6",
+      "name": "MAP Kinase 6",
+      "category": "MAPK",
+      "location": "cytoplasm",
+      "description": "MAPK de defesa, fosforila WRKYs"
+    },
+    {
+      "id": "RBOHD",
+      "name": "Respiratory Burst Oxidase D",
+      "category": "Oxidase",
+      "location": "membrane",
+      "description": "NADPH oxidase, produz ROS"
+    },
+    {
+      "id": "WRKY33",
+      "name": "WRKY33",
+      "category": "TF",
+      "location": "nucleus",
+      "description": "TF de defesa, alvo de MPK3/6"
+    },
+    {
+      "id": "WRKY22",
+      "name": "WRKY22",
+      "category": "TF",
+      "location": "nucleus",
+      "description": "TF responsivo a PTI"
+    },
+    {
+      "id": "WRKY29",
+      "name": "WRKY29",
+      "category": "TF",
+      "location": "nucleus",
+      "description": "TF responsivo a flagelina"
+    },
+    {
+      "id": "MYC2",
+      "name": "MYC2",
+      "category": "TF",
+      "location": "nucleus",
+      "description": "TF master de JA signaling"
+    },
+    {
+      "id": "NPR1",
+      "name": "NPR1",
+      "category": "TF",
+      "location": "nucleus",
+      "description": "Receptor de SA, ativa PR genes"
+    },
+    {
+      "id": "TGA1",
+      "name": "TGA1",
+      "category": "TF",
+      "location": "nucleus",
+      "description": "TF que interage com NPR1"
+    },
+    {
+      "id": "ICS1",
+      "name": "Isochorismate Synthase 1",
+      "category": "Biosynthesis",
+      "location": "chloroplast",
+      "description": "Biossintese de SA"
+    },
+    {
+      "id": "EDS5",
+      "name": "Enhanced Disease Susceptibility 5",
+      "category": "Transporter",
+      "location": "chloroplast",
+      "description": "Exportador de SA do cloroplasto"
+    },
+    {
+      "id": "LOX2",
+      "name": "Lipoxygenase 2",
+      "category": "Biosynthesis",
+      "location": "chloroplast",
+      "description": "Biossintese de JA"
+    },
+    {
+      "id": "AOS",
+      "name": "Allene Oxide Synthase",
+      "category": "Biosynthesis",
+      "location": "chloroplast",
+      "description": "Biossintese de JA"
+    },
+    {
+      "id": "COI1",
+      "name": "Coronatine Insensitive 1",
+      "category": "Receptor",
+      "location": "nucleus",
+      "description": "Receptor de JA-Ile"
+    },
+    {
+      "id": "JAZ1",
+      "name": "Jasmonate ZIM-domain 1",
+      "category": "Repressor",
+      "location": "nucleus",
+      "description": "Repressor de JA signaling"
+    },
+    {
+      "id": "PR1",
+      "name": "Pathogenesis-Related 1",
+      "category": "Defense",
+      "location": "apoplast",
+      "description": "Marcador de SA, antimicrobiano"
+    },
+    {
+      "id": "PR2",
+      "name": "Pathogenesis-Related 2",
+      "category": "Defense",
+      "location": "apoplast",
+      "description": "Beta-1,3-glucanase"
+    },
+    {
+      "id": "PR5",
+      "name": "Pathogenesis-Related 5",
+      "category": "Defense",
+      "location": "apoplast",
+      "description": "Thaumatin-like protein"
+    },
+    {
+      "id": "PDF1.2",
+      "name": "Plant Defensin 1.2",
+      "category": "Defense",
+      "location": "apoplast",
+      "description": "Defensina, marcador de JA"
+    },
+    {
+      "id": "FRK1",
+      "name": "FLG22-induced Receptor Kinase 1",
+      "category": "Defense",
+      "location": "membrane",
+      "description": "Marcador de PTI"
+    },
+    {
+      "id": "NRC2",
+      "name": "NLR Required for Cell death 2",
+      "category": "NLR",
+      "location": "cytoplasm",
+      "description": "Helper NLR"
+    },
+    {
+      "id": "NRC3",
+      "name": "NLR Required for Cell death 3",
+      "category": "NLR",
+      "location": "cytoplasm",
+      "description": "Helper NLR"
+    },
+    {
+      "id": "NRC4",
+      "name": "NLR Required for Cell death 4",
+      "category": "NLR",
+      "location": "cytoplasm",
+      "description": "Helper NLR"
+    },
+    {
+      "id": "NRG1",
+      "name": "N Requirement Gene 1",
+      "category": "NLR",
+      "location": "cytoplasm",
+      "description": "Helper NLR tipo TNL"
+    },
+    {
+      "id": "RIN4",
+      "name": "RPM1-Interacting protein 4",
+      "category": "Target",
+      "location": "membrane",
+      "description": "Alvo de AvrRpm1/AvrB/AvrRpt2"
+    },
+    {
+      "id": "C14",
+      "name": "Cysteine Protease 14",
+      "category": "Target",
+      "location": "apoplast",
+      "description": "Alvo de AVRblb2"
+    }
+  ],
+  "interactions": [
+    {
+      "source": "FLS2",
+      "target": "BAK1",
+      "type": "activation",
+      "weight": 0.95,
+      "evidence": "experimental"
+    },
+    {
+      "source": "EFR",
+      "target": "BAK1",
+      "type": "activation",
+      "weight": 0.95,
+      "evidence": "experimental"
+    },
+    {
+      "source": "CERK1",
+      "target": "BAK1",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "experimental"
+    },
+    {
+      "source": "BAK1",
+      "target": "BIK1",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "experimental"
+    },
+    {
+      "source": "BIK1",
+      "target": "RBOHD",
+      "type": "activation",
+      "weight": 0.85,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "BIK1",
+      "target": "MKK4",
+      "type": "activation",
+      "weight": 0.8,
+      "evidence": "experimental"
+    },
+    {
+      "source": "MEKK1",
+      "target": "MKK1",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "experimental"
+    },
+    {
+      "source": "MKK1",
+      "target": "MPK4",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MKK4",
+      "target": "MPK3",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MKK4",
+      "target": "MPK6",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MKK5",
+      "target": "MPK3",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MKK5",
+      "target": "MPK6",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MPK3",
+      "target": "WRKY33",
+      "type": "activation",
+      "weight": 0.88,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MPK6",
+      "target": "WRKY33",
+      "type": "activation",
+      "weight": 0.88,
+      "evidence": "phosphorylation"
+    },
+    {
+      "source": "MPK4",
+      "target": "WRKY33",
+      "type": "repression",
+      "weight": -0.7,
+      "evidence": "experimental"
+    },
+    {
+      "source": "WRKY33",
+      "target": "PR1",
+      "type": "activation",
+      "weight": 0.75,
+      "evidence": "ChIP"
+    },
+    {
+      "source": "WRKY29",
+      "target": "FRK1",
+      "type": "activation",
+      "weight": 0.8,
+      "evidence": "ChIP"
+    },
+    {
+      "source": "NPR1",
+      "target": "TGA1",
+      "type": "activation",
+      "weight": 0.85,
+      "evidence": "experimental"
+    },
+    {
+      "source": "TGA1",
+      "target": "PR1",
+      "type": "activation",
+      "weight": 0.85,
+      "evidence": "ChIP"
+    },
+    {
+      "source": "TGA1",
+      "target": "PR2",
+      "type": "activation",
+      "weight": 0.8,
+      "evidence": "ChIP"
+    },
+    {
+      "source": "TGA1",
+      "target": "PR5",
+      "type": "activation",
+      "weight": 0.8,
+      "evidence": "ChIP"
+    },
+    {
+      "source": "ICS1",
+      "target": "EDS5",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "biochemical"
+    },
+    {
+      "source": "EDS5",
+      "target": "NPR1",
+      "type": "activation",
+      "weight": 0.85,
+      "evidence": "genetic"
+    },
+    {
+      "source": "LOX2",
+      "target": "AOS",
+      "type": "activation",
+      "weight": 0.9,
+      "evidence": "biochemical"
+    },
+    {
+      "source": "COI1",
+      "target": "JAZ1",
+      "type": "repression",
+      "weight": -0.95,
+      "evidence": "degradation"
+    },
+    {
+      "source": "JAZ1",
+      "target": "MYC2",
+      "type": "repression",
+      "weight": -0.9,
+      "evidence": "experimental"
+    },
+    {
+      "source": "MYC2",
+      "target": "PDF1.2",
+      "type": "activation",
+      "weight": 0.85,
+      "evidence": "ChIP"
+    },
+    {
+      "source": "NPR1",
+      "target": "MYC2",
+      "type": "repression",
+      "weight": -0.7,
+      "evidence": "genetic"
+    },
+    {
+      "source": "NRC2",
+      "target": "NRC3",
+      "type": "activation",
+      "weight": 0.8,
+      "evidence": "genetic"
+    },
+    {
+      "source": "NRC3",
+      "target": "NRC4",
+      "type": "activation",
+      "weight": 0.8,
+      "evidence": "genetic"
+    },
+    {
+      "source": "NRG1",
+      "target": "NRC2",
+      "type": "activation",
+      "weight": 0.75,
+      "evidence": "genetic"
+    }
+  ]
+}

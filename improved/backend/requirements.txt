@@ -1,0 +1,77 @@
+# ============================================
+# Bioinformatics Hub - Backend Dependencies
+# ============================================
+# Instalar com: pip install -r requirements.txt
+
+# ============================================
+# WEB FRAMEWORK
+# ============================================
+fastapi>=0.109.0          # Framework web async
+uvicorn[standard]>=0.27.0 # Servidor ASGI (production-ready)
+python-multipart>=0.0.6   # Upload de arquivos
+
+# ============================================
+# DATABASE
+# ============================================
+sqlalchemy[asyncio]>=2.0.0  # ORM com suporte async
+asyncpg>=0.29.0             # Driver PostgreSQL async (mais rápido)
+alembic>=1.13.0             # Migrações de banco de dados
+
+# ============================================
+# CONFIGURATION & VALIDATION
+# ============================================
+pydantic>=2.5.0            # Validação de dados
+pydantic-settings>=2.1.0   # Settings com .env
+python-dotenv>=1.0.0       # Leitura de .env
+
+# ============================================
+# CACHE & TASK QUEUE
+# ============================================
+redis>=5.0.0               # Cliente Redis
+celery>=5.3.0              # Task queue para jobs longos
+flower>=2.0.0              # Monitoramento do Celery (opcional)
+
+# ============================================
+# GRAPH DATABASE (Neo4j)
+# ============================================
+neo4j>=5.0.0               # Driver Neo4j async
+
+# ============================================
+# BIOINFORMATICS
+# ============================================
+biopython>=1.83            # Parsing FASTA, GenBank, etc.
+numpy>=1.26.0              # Operações numéricas (GRN inference)
+# pandas>=2.1.0            # DataFrames (adicionar quando necessário)
+
+# ============================================
+# HTTP CLIENT (para APIs externas)
+# ============================================
+httpx>=0.26.0              # Cliente HTTP async (UniProt, NCBI, etc.)
+aiofiles>=23.2.0           # I/O de arquivos async
+
+# ============================================
+# SECURITY
+# ============================================
+# passlib[bcrypt]>=1.7.4   # Hash de senhas (quando adicionar auth)
+# python-jose[cryptography]>=3.3.0  # JWT tokens
+
+# ============================================
+# DEVELOPMENT & TESTING
+# ============================================
+pytest>=7.4.0              # Framework de testes
+pytest-asyncio>=0.23.0     # Testes async
+pytest-cov>=4.1.0          # Coverage de testes
+httpx>=0.26.0              # Cliente para testes de API
+
+# ============================================
+# CODE QUALITY (opcional, mas recomendado)
+# ============================================
+# ruff>=0.1.0              # Linter + formatter (mais rápido que black+flake8)
+# mypy>=1.8.0              # Type checking
+# pre-commit>=3.6.0        # Git hooks
+
+# ============================================
+# MONITORING (opcional)
+# ============================================
+# prometheus-client>=0.19.0  # Métricas
+# structlog>=24.1.0          # Logging estruturado

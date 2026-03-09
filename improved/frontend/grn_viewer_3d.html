@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRN 3D Viewer - Bioinformatics Hub</title>
+
+    <!-- 3D Force Graph (includes Three.js) -->
+    <script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a1a;
+            color: #eee;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(22, 33, 62, 0.95);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e94560;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            color: #e94560;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 span {
+            color: #4ecca3;
+            font-size: 0.8rem;
+            background: rgba(78, 204, 163, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        input[type="text"], input[type="number"] {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            color: #eee;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        select {
+            background: #1a1a2e;
+            border: 1px solid #0f3460;
+            color: #eee;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #ff6b8a;
+            transform: translateY(-1px);
+        }
+
+        button.secondary {
+            background: #0f3460;
+        }
+
+        button.secondary:hover {
+            background: #16213e;
+        }
+
+        /* 3D Container */
+        #graph-container {
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a1a 100%);
+        }
+
+        /* Info Panel */
+        .info-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 280px;
+            background: rgba(22, 33, 62, 0.95);
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-panel h3 {
+            color: #e94560;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            border-bottom: 1px solid #0f3460;
+            padding-bottom: 8px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-value {
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        /* Node Info Panel */
+        .node-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 320px;
+            background: rgba(22, 33, 62, 0.95);
+            border: 1px solid #e94560;
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .node-panel.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .node-panel h3 {
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .node-detail {
+            margin: 8px 0;
+        }
+
+        .node-detail label {
+            color: #888;
+            font-size: 0.8rem;
+            display: block;
+        }
+
+        .node-detail value {
+            color: #eee;
+            font-size: 1rem;
+        }
+
+        /* Legend */
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(22, 33, 62, 0.95);
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 12px 15px;
+            z-index: 100;
+        }
+
+        .legend h4 {
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 200;
+        }
+
+        .loading.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #0f3460;
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Instructions */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(22, 33, 62, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #888;
+            z-index: 50;
+        }
+
+        .instructions span {
+            margin: 0 10px;
+        }
+
+        /* Filter Panel */
+        .filter-panel {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            width: 250px;
+            background: rgba(22, 33, 62, 0.95);
+            border: 1px solid #0f3460;
+            border-radius: 8px;
+            padding: 15px;
+            z-index: 100;
+        }
+
+        .filter-panel h3 {
+            color: #4ecca3;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .filter-row {
+            margin: 10px 0;
+        }
+
+        .filter-row label {
+            display: block;
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .filter-row input[type="range"] {
+            width: 100%;
+            accent-color: #e94560;
+        }
+
+        .filter-row input[type="text"] {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GRN 3D Viewer <span>Three.js</span></h1>
+        <div class="controls">
+            <div class="control-group">
+                <label>API:</label>
+                <input type="text" id="api-url" value="http://localhost:8000" style="width: 160px;">
+            </div>
+            <div class="control-group">
+                <label>Network:</label>
+                <input type="number" id="network-id" value="1" style="width: 60px;">
+            </div>
+            <button id="btn-load">Carregar</button>
+            <button id="btn-reset" class="secondary">Reset View</button>
+            <div class="control-group">
+                <label>Particles:</label>
+                <select id="particle-mode">
+                    <option value="true">On</option>
+                    <option value="false">Off</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <div id="graph-container"></div>
+
+    <!-- Stats Panel -->
+    <div class="info-panel">
+        <h3>Estatisticas</h3>
+        <div class="stat-row">
+            <span>Nodes</span>
+            <span class="stat-value" id="stat-nodes">0</span>
+        </div>
+        <div class="stat-row">
+            <span>Edges</span>
+            <span class="stat-value" id="stat-edges">0</span>
+        </div>
+        <div class="stat-row">
+            <span>Density</span>
+            <span class="stat-value" id="stat-density">0</span>
+        </div>
+        <div class="stat-row">
+            <span>Network</span>
+            <span class="stat-value" id="stat-name">-</span>
+        </div>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="filter-panel">
+        <h3>Filtros</h3>
+        <div class="filter-row">
+            <label>Min Edge Weight: <span id="weight-display">0</span></label>
+            <input type="range" id="weight-filter" min="0" max="1" step="0.05" value="0">
+        </div>
+        <div class="filter-row">
+            <label>Buscar Gene:</label>
+            <input type="text" id="gene-search" placeholder="SPSC_04270...">
+        </div>
+        <div class="filter-row">
+            <label>
+                <input type="checkbox" id="show-labels" checked> Mostrar Labels
+            </label>
+        </div>
+        <div class="filter-row">
+            <label>
+                <input type="checkbox" id="auto-rotate"> Auto Rotacao
+            </label>
+        </div>
+    </div>
+
+    <!-- Node Info Panel -->
+    <div class="node-panel" id="node-panel">
+        <h3>Node Info</h3>
+        <div class="node-detail">
+            <label>ID</label>
+            <value id="node-id">-</value>
+        </div>
+        <div class="node-detail">
+            <label>Label</label>
+            <value id="node-label">-</value>
+        </div>
+        <div class="node-detail">
+            <label>Connections</label>
+            <value id="node-degree">-</value>
+        </div>
+        <div class="node-detail">
+            <label>Type</label>
+            <value id="node-type">-</value>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+        <h4>LEGENDA</h4>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e94560;"></div>
+            <span>TF/Hub Gene</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #4ecca3;"></div>
+            <span>Target Gene</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #3498db;"></div>
+            <span>Activation</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #e74c3c;"></div>
+            <span>Repression</span>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions">
+        <span>Arrastar: Rotacionar</span>
+        <span>Scroll: Zoom</span>
+        <span>Click: Selecionar Node</span>
+        <span>Right-click: Arrastar Node</span>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Carregando rede 3D...</p>
+    </div>
+
+    <script>
+        // =============================================
+        // 3D FORCE GRAPH SETUP
+        // =============================================
+
+        let graphData = { nodes: [], links: [] };
+        let highlightNodes = new Set();
+        let highlightLinks = new Set();
+        let hoverNode = null;
+
+        // Initialize 3D Graph
+        const Graph = ForceGraph3D()
+            (document.getElementById('graph-container'))
+            .backgroundColor('#0a0a1a')
+            .showNavInfo(false)
+
+            // Node appearance
+            .nodeLabel(node => `
+                <div style="background: rgba(22,33,62,0.95); padding: 8px 12px; border-radius: 4px; border: 1px solid #e94560;">
+                    <strong style="color: #e94560;">${node.label || node.id}</strong><br/>
+                    <span style="color: #888;">Connections: ${node.degree || 0}</span>
+                </div>
+            `)
+            .nodeColor(node => {
+                if (highlightNodes.has(node)) return '#f1c40f';
+                return node.isHub ? '#e94560' : '#4ecca3';
+            })
+            .nodeVal(node => {
+                // Size based on connections
+                return Math.max(2, Math.min(15, (node.degree || 1) * 0.8));
+            })
+            .nodeOpacity(0.9)
+            .nodeResolution(16)
+
+            // Link appearance
+            .linkColor(link => {
+                if (highlightLinks.has(link)) return '#f1c40f';
+                return link.weight > 0 ? 'rgba(52, 152, 219, 0.6)' : 'rgba(231, 76, 60, 0.6)';
+            })
+            .linkWidth(link => {
+                return highlightLinks.has(link) ? 2 : Math.abs(link.weight || 0.5) * 1.5;
+            })
+            .linkOpacity(0.4)
+            .linkDirectionalParticles(link => highlightLinks.has(link) ? 4 : 0)
+            .linkDirectionalParticleWidth(2)
+            .linkDirectionalParticleColor(() => '#f1c40f')
+
+            // Interactions
+            .onNodeClick(node => {
+                showNodeInfo(node);
+                highlightNode(node);
+            })
+            .onNodeHover(node => {
+                document.body.style.cursor = node ? 'pointer' : 'default';
+            })
+            .onBackgroundClick(() => {
+                clearHighlight();
+                hideNodeInfo();
+            })
+
+            // Force settings
+            .d3AlphaDecay(0.02)
+            .d3VelocityDecay(0.3)
+            .warmupTicks(100)
+            .cooldownTicks(200);
+
+        // Add directional arrows
+        Graph.linkDirectionalArrowLength(3)
+             .linkDirectionalArrowRelPos(0.9)
+             .linkDirectionalArrowColor(link => link.weight > 0 ? '#3498db' : '#e74c3c');
+
+        // =============================================
+        // DATA LOADING
+        // =============================================
+
+        async function loadNetwork() {
+            const apiUrl = document.getElementById('api-url').value;
+            const networkId = document.getElementById('network-id').value;
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`${apiUrl}/api/v1/grn/${networkId}/graph`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Convert Cytoscape format to 3d-force-graph format
+                graphData = convertData(data);
+
+                // Update graph
+                Graph.graphData(graphData);
+
+                // Update stats
+                updateStats(data);
+
+                showLoading(false);
+
+            } catch (error) {
+                console.error('Error loading network:', error);
+                showLoading(false);
+                loadDemoData();
+            }
+        }
+
+        function convertData(cytoscapeData) {
+            const nodes = [];
+            const links = [];
+            const degreeMap = {};
+
+            // Count degrees first
+            (cytoscapeData.elements?.edges || []).forEach(edge => {
+                const src = edge.data.source;
+                const tgt = edge.data.target;
+                degreeMap[src] = (degreeMap[src] || 0) + 1;
+                degreeMap[tgt] = (degreeMap[tgt] || 0) + 1;
+            });
+
+            // Convert nodes
+            (cytoscapeData.elements?.nodes || []).forEach(node => {
+                const id = node.data.id;
+                const degree = degreeMap[id] || 0;
+                nodes.push({
+                    id: id,
+                    label: node.data.label || id,
+                    degree: degree,
+                    isHub: degree > 5,  // Hub if more than 5 connections
+                    module: node.data.module,
+                    ...node.data
+                });
+            });
+
+            // Convert edges to links
+            (cytoscapeData.elements?.edges || []).forEach(edge => {
+                links.push({
+                    source: edge.data.source,
+                    target: edge.data.target,
+                    weight: edge.data.weight || 0.5,
+                    type: edge.data.type || 'correlation'
+                });
+            });
+
+            return { nodes, links };
+        }
+
+        function loadDemoData() {
+            // Demo network for S. scitamineum
+            const demoNodes = [
+                { id: 'Mig1', label: 'Mig1', isHub: true, degree: 6 },
+                { id: 'SCRP1', label: 'SCRP1', isHub: false, degree: 3 },
+                { id: 'SCRP2', label: 'SCRP2', isHub: false, degree: 2 },
+                { id: 'COL', label: 'COL', isHub: false, degree: 2 },
+                { id: 'GH16', label: 'GH16', isHub: false, degree: 3 },
+                { id: 'MEX', label: 'MEX', isHub: false, degree: 3 },
+                { id: 'CM', label: 'CM', isHub: false, degree: 2 },
+                { id: 'NAG', label: 'NAG', isHub: false, degree: 1 },
+                { id: 'hyp5', label: 'hyp5', isHub: false, degree: 2 },
+                { id: 'PH', label: 'PH', isHub: false, degree: 1 },
+            ];
+
+            const demoLinks = [
+                { source: 'Mig1', target: 'SCRP1', weight: 0.85 },
+                { source: 'Mig1', target: 'SCRP2', weight: 0.78 },
+                { source: 'Mig1', target: 'COL', weight: 0.72 },
+                { source: 'Mig1', target: 'GH16', weight: 0.81 },
+                { source: 'Mig1', target: 'MEX', weight: -0.65 },
+                { source: 'Mig1', target: 'CM', weight: 0.69 },
+                { source: 'GH16', target: 'NAG', weight: 0.55 },
+                { source: 'MEX', target: 'hyp5', weight: -0.48 },
+                { source: 'MEX', target: 'PH', weight: -0.52 },
+                { source: 'SCRP1', target: 'SCRP2', weight: 0.91 },
+            ];
+
+            graphData = { nodes: demoNodes, links: demoLinks };
+            Graph.graphData(graphData);
+
+            document.getElementById('stat-nodes').textContent = demoNodes.length;
+            document.getElementById('stat-edges').textContent = demoLinks.length;
+            document.getElementById('stat-name').textContent = 'Demo: S. scitamineum';
+            document.getElementById('stat-density').textContent = '0.2222';
+        }
+
+        // =============================================
+        // HIGHLIGHTING
+        // =============================================
+
+        function highlightNode(node) {
+            highlightNodes.clear();
+            highlightLinks.clear();
+
+            if (node) {
+                highlightNodes.add(node);
+
+                // Find connected nodes and links
+                graphData.links.forEach(link => {
+                    if (link.source.id === node.id || link.target.id === node.id ||
+                        link.source === node.id || link.target === node.id) {
+                        highlightLinks.add(link);
+                        highlightNodes.add(link.source);
+                        highlightNodes.add(link.target);
+                    }
+                });
+            }
+
+            updateHighlight();
+        }
+
+        function clearHighlight() {
+            highlightNodes.clear();
+            highlightLinks.clear();
+            updateHighlight();
+        }
+
+        function updateHighlight() {
+            // Trigger re-render
+            Graph.nodeColor(Graph.nodeColor())
+                 .linkColor(Graph.linkColor())
+                 .linkWidth(Graph.linkWidth())
+                 .linkDirectionalParticles(Graph.linkDirectionalParticles());
+        }
+
+        // =============================================
+        // NODE INFO
+        // =============================================
+
+        function showNodeInfo(node) {
+            const panel = document.getElementById('node-panel');
+            document.getElementById('node-id').textContent = node.id;
+            document.getElementById('node-label').textContent = node.label || node.id;
+            document.getElementById('node-degree').textContent = node.degree || 0;
+            document.getElementById('node-type').textContent = node.isHub ? 'Hub/TF' : 'Target';
+            panel.classList.add('visible');
+        }
+
+        function hideNodeInfo() {
+            document.getElementById('node-panel').classList.remove('visible');
+        }
+
+        // =============================================
+        // STATS
+        // =============================================
+
+        function updateStats(data) {
+            const n = data.node_count || graphData.nodes.length;
+            const e = data.edge_count || graphData.links.length;
+
+            document.getElementById('stat-nodes').textContent = n;
+            document.getElementById('stat-edges').textContent = e;
+            document.getElementById('stat-name').textContent = data.name || 'GRN';
+
+            const density = n > 1 ? (e / (n * (n - 1))).toFixed(4) : 0;
+            document.getElementById('stat-density').textContent = density;
+        }
+
+        // =============================================
+        // FILTERS
+        // =============================================
+
+        document.getElementById('weight-filter').addEventListener('input', (e) => {
+            const minWeight = parseFloat(e.target.value);
+            document.getElementById('weight-display').textContent = minWeight.toFixed(2);
+
+            // Filter links by weight
+            Graph.linkVisibility(link => Math.abs(link.weight || 0) >= minWeight);
+        });
+
+        document.getElementById('gene-search').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+
+            if (search) {
+                // Find matching node
+                const node = graphData.nodes.find(n =>
+                    n.id.toLowerCase().includes(search) ||
+                    (n.label && n.label.toLowerCase().includes(search))
+                );
+
+                if (node) {
+                    highlightNode(node);
+                    showNodeInfo(node);
+                    // Focus camera on node
+                    Graph.cameraPosition(
+                        { x: node.x + 100, y: node.y + 100, z: node.z + 100 },
+                        node,
+                        1000
+                    );
+                }
+            } else {
+                clearHighlight();
+            }
+        });
+
+        document.getElementById('show-labels').addEventListener('change', (e) => {
+            if (e.target.checked) {
+                Graph.nodeLabel(node => `
+                    <div style="background: rgba(22,33,62,0.95); padding: 8px 12px; border-radius: 4px; border: 1px solid #e94560;">
+                        <strong style="color: #e94560;">${node.label || node.id}</strong><br/>
+                        <span style="color: #888;">Connections: ${node.degree || 0}</span>
+                    </div>
+                `);
+            } else {
+                Graph.nodeLabel(() => '');
+            }
+        });
+
+        document.getElementById('auto-rotate').addEventListener('change', (e) => {
+            Graph.enableNodeDrag(!e.target.checked);
+
+            if (e.target.checked) {
+                // Start auto rotation
+                let angle = 0;
+                const distance = 300;
+
+                const rotate = () => {
+                    if (document.getElementById('auto-rotate').checked) {
+                        Graph.cameraPosition({
+                            x: distance * Math.sin(angle),
+                            y: 50,
+                            z: distance * Math.cos(angle)
+                        });
+                        angle += 0.002;
+                        requestAnimationFrame(rotate);
+                    }
+                };
+                rotate();
+            }
+        });
+
+        document.getElementById('particle-mode').addEventListener('change', (e) => {
+            const showParticles = e.target.value === 'true';
+            Graph.linkDirectionalParticles(showParticles ? 2 : 0)
+                 .linkDirectionalParticleWidth(2)
+                 .linkDirectionalParticleSpeed(0.005);
+        });
+
+        // =============================================
+        // UI HELPERS
+        // =============================================
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('hidden', !show);
+        }
+
+        // =============================================
+        // EVENT LISTENERS
+        // =============================================
+
+        document.getElementById('btn-load').addEventListener('click', loadNetwork);
+
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            Graph.cameraPosition({ x: 0, y: 0, z: 300 }, { x: 0, y: 0, z: 0 }, 1000);
+            clearHighlight();
+            hideNodeInfo();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                clearHighlight();
+                hideNodeInfo();
+            }
+            if (e.key === 'r' || e.key === 'R') {
+                Graph.cameraPosition({ x: 0, y: 0, z: 300 }, { x: 0, y: 0, z: 0 }, 1000);
+            }
+        });
+
+        // =============================================
+        // INITIALIZATION
+        // =============================================
+
+        // Hide loading initially
+        showLoading(false);
+
+        // Load demo data on start
+        loadDemoData();
+
+        // Auto-load if API available
+        setTimeout(() => {
+            fetch('http://localhost:8000/health')
+                .then(r => r.ok && loadNetwork())
+                .catch(() => console.log('API offline, using demo data'));
+        }, 500);
+    </script>
+</body>
+</html>

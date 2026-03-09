@@ -1,0 +1,727 @@
+{
+  "MEpurple": {
+    "genes": [
+      "SPSC_00283",
+      "SPSC_00297",
+      "SPSC_00734",
+      "SPSC_01053",
+      "SPSC_01093",
+      "SPSC_01291",
+      "SPSC_01486",
+      "SPSC_01526",
+      "SPSC_01537",
+      "SPSC_01618",
+      "SPSC_02117",
+      "SPSC_02261",
+      "SPSC_02540",
+      "SPSC_02566",
+      "SPSC_02767",
+      "SPSC_02859",
+      "SPSC_03088",
+      "SPSC_03216",
+      "SPSC_03303",
+      "SPSC_03368",
+      "SPSC_03434",
+      "SPSC_03548",
+      "SPSC_03976",
+      "SPSC_04003",
+      "SPSC_04071",
+      "SPSC_04115",
+      "SPSC_04191",
+      "SPSC_04367",
+      "SPSC_04398",
+      "SPSC_04473",
+      "SPSC_04954",
+      "SPSC_04995",
+      "SPSC_05063",
+      "SPSC_05145",
+      "SPSC_05288",
+      "SPSC_05439",
+      "SPSC_05619",
+      "SPSC_05906",
+      "SPSC_05931",
+      "SPSC_06022",
+      "SPSC_06411"
+    ],
+    "description": "Genes induced during infection, ER stress response"
+  },
+  "phi_base_matches": [
+    {
+      "gene_id": "SPSC_02155",
+      "phi_id": "PHI:2234",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "Chorismate mutases"
+    },
+    {
+      "gene_id": "SPSC_04270",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_04271",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_04266",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_04273",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_04267",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_04272",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_04264",
+      "phi_id": "PHI:176",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_01958",
+      "phi_id": "PHI:4987",
+      "pathogen": "Candida_albicans",
+      "phenotype": "reduced_virulence",
+      "function": "beta-hexosaminidase"
+    },
+    {
+      "gene_id": "SPSC_04127",
+      "phi_id": "PHI:10565",
+      "pathogen": "Streptococcus_suis",
+      "phenotype": "reduced_virulence",
+      "function": "Alpha-1,2-mannosidase, putative"
+    },
+    {
+      "gene_id": "SPSC_05439",
+      "phi_id": "PHI:9867",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Protein disulfide-isomerase"
+    },
+    {
+      "gene_id": "SPSC_00958",
+      "phi_id": "PHI:7911",
+      "pathogen": "Phytophthora_parasitica",
+      "phenotype": "reduced_virulence",
+      "function": "Endo-beta-1,4-xylanase"
+    },
+    {
+      "gene_id": "SPSC_04071",
+      "phi_id": "PHI:7181",
+      "pathogen": "Beauveria_bassiana",
+      "phenotype": "reduced_virulence",
+      "function": "Peptidyl-prolyl cis-trans isomerase - putative secretory protein"
+    },
+    {
+      "gene_id": "SPSC_03548",
+      "phi_id": "PHI:504",
+      "pathogen": "Saccharomyces_cerevisiae",
+      "phenotype": "reduced_virulence",
+      "function": "beta-isopropyl-malate dehydrogenase"
+    },
+    {
+      "gene_id": "SPSC_01618",
+      "phi_id": "PHI:7511",
+      "pathogen": "Klebsiella_pneumoniae",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Serine 3-dehydrogenase"
+    },
+    {
+      "gene_id": "SPSC_03260",
+      "phi_id": "PHI:3223",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "inhibitor of programmed cell death in host during infection"
+    },
+    {
+      "gene_id": "SPSC_00819",
+      "phi_id": "PHI:3226",
+      "pathogen": "Penicillium_digitatum",
+      "phenotype": "reduced_virulence",
+      "function": "pectin lyase"
+    },
+    {
+      "gene_id": "SPSC_01053",
+      "phi_id": "PHI:5406",
+      "pathogen": "Xanthomonas_campestris",
+      "phenotype": "reduced_virulence",
+      "function": "4-HBA degradation pathway components"
+    },
+    {
+      "gene_id": "SPSC_00434",
+      "phi_id": "PHI:10468",
+      "pathogen": "Trichophyton_rubrum",
+      "phenotype": "reduced_virulence",
+      "function": "BZIP domain-containing protein"
+    },
+    {
+      "gene_id": "SPSC_04535",
+      "phi_id": "PHI:1087",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_01152",
+      "phi_id": "PHI:1087",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Unknown"
+    },
+    {
+      "gene_id": "SPSC_03150",
+      "phi_id": "PHI:7257",
+      "pathogen": "Radopholus_similis",
+      "phenotype": "reduced_virulence",
+      "function": "Serine carboxypeptidases, esophageal gland-secreted protein"
+    },
+    {
+      "gene_id": "SPSC_01486",
+      "phi_id": "PHI:5395",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "Endoplasmic reticulum (ER) membrane transporter for precursors of secretory proteins."
+    },
+    {
+      "gene_id": "SPSC_03301",
+      "phi_id": "PHI:3936",
+      "pathogen": "Sclerotinia_sclerotiorum",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "encodes a secretory protein with a putative Ca2 binding EF-hand motif"
+    },
+    {
+      "gene_id": "SPSC_02566",
+      "phi_id": "PHI:1414",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "transcription factor"
+    },
+    {
+      "gene_id": "SPSC_02966",
+      "phi_id": "PHI:9126",
+      "pathogen": "Brucella_abortus",
+      "phenotype": "reduced_virulence",
+      "function": "choline dehydrogenase"
+    },
+    {
+      "gene_id": "SPSC_06072",
+      "phi_id": "PHI:812",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "Hypothetical protein"
+    },
+    {
+      "gene_id": "SPSC_03303",
+      "phi_id": "PHI:9564",
+      "pathogen": "Aspergillus_fumigatus",
+      "phenotype": "reduced_virulence",
+      "function": "3-Isopropylmalate dehydratase"
+    },
+    {
+      "gene_id": "SPSC_01092",
+      "phi_id": "PHI:2920",
+      "pathogen": "Colletotrichum_graminicola",
+      "phenotype": "reduced_virulence",
+      "function": "Functional ferroxidase"
+    },
+    {
+      "gene_id": "SPSC_00607",
+      "phi_id": "PHI:5190",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "Peroxiredoxin peroxidase"
+    },
+    {
+      "gene_id": "SPSC_04473",
+      "phi_id": "PHI:10485",
+      "pathogen": "Pseudomonas_aeruginosa",
+      "phenotype": "reduced_virulence",
+      "function": "Heat shock protein"
+    },
+    {
+      "gene_id": "SPSC_00877",
+      "phi_id": "PHI:184",
+      "pathogen": "Candida_albicans",
+      "phenotype": "reduced_virulence",
+      "function": "Plant-pathogenesis related protein (PR-1)"
+    },
+    {
+      "gene_id": "SPSC_03216",
+      "phi_id": "PHI:7281",
+      "pathogen": "Puccinia_striiformis",
+      "phenotype": "reduced_virulence",
+      "function": "Invertase"
+    },
+    {
+      "gene_id": "SPSC_04390",
+      "phi_id": "PHI:6628",
+      "pathogen": "Staphylococcus_aureus",
+      "phenotype": "reduced_virulence",
+      "function": "BCAA transporter"
+    },
+    {
+      "gene_id": "SPSC_04753",
+      "phi_id": "PHI:6628",
+      "pathogen": "Staphylococcus_aureus",
+      "phenotype": "reduced_virulence",
+      "function": "BCAA transporter"
+    },
+    {
+      "gene_id": "SPSC_04475",
+      "phi_id": "PHI:2854",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "cis-Active Elements"
+    },
+    {
+      "gene_id": "SPSC_06259",
+      "phi_id": "PHI:7376",
+      "pathogen": "Beauveria_bassiana",
+      "phenotype": "reduced_virulence",
+      "function": "LysM effector protein"
+    },
+    {
+      "gene_id": "SPSC_04115",
+      "phi_id": "PHI:5394",
+      "pathogen": "Beauveria_bassiana",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "Heat shock protein classified to Hsp40 group"
+    },
+    {
+      "gene_id": "SPSC_06411",
+      "phi_id": "PHI:8716",
+      "pathogen": "Candida_albicans",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "beta-1,6-glucan synthase"
+    },
+    {
+      "gene_id": "SPSC_05288",
+      "phi_id": "PHI:6927",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "Ubiquitin ligase"
+    },
+    {
+      "gene_id": "SPSC_05697",
+      "phi_id": "PHI:8769",
+      "pathogen": "Metarhizium_acridum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Ser/Thr protein phosphatase"
+    },
+    {
+      "gene_id": "SPSC_06113",
+      "phi_id": "PHI:1674",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "transcription factor"
+    },
+    {
+      "gene_id": "SPSC_00720",
+      "phi_id": "PHI:4229",
+      "pathogen": "Aspergillus_fumigatus",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "ABC transporter-encoding genes"
+    },
+    {
+      "gene_id": "SPSC_00441",
+      "phi_id": "PHI:278",
+      "pathogen": "Botrytis_cinerea",
+      "phenotype": "reduced_virulence",
+      "function": "Pectin Methylesterase"
+    },
+    {
+      "gene_id": "SPSC_05931",
+      "phi_id": "PHI:8803",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Putative salicylate hydroxylase"
+    },
+    {
+      "gene_id": "SPSC_01590",
+      "phi_id": "PHI:397",
+      "pathogen": "Cryptococcus_neoformans",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Laccase"
+    },
+    {
+      "gene_id": "SPSC_04003",
+      "phi_id": "PHI:9986",
+      "pathogen": "Xanthomonas_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "Cystathionine gamma-synthase (CGS) (O-succinylhomoserine(Thiol)-lyase)"
+    },
+    {
+      "gene_id": "SPSC_00398",
+      "phi_id": "PHI:1555",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "transcription factor"
+    },
+    {
+      "gene_id": "SPSC_01989",
+      "phi_id": "PHI:1555",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "transcription factor"
+    },
+    {
+      "gene_id": "SPSC_05314",
+      "phi_id": "PHI:7788",
+      "pathogen": "Pseudomonas_syringae",
+      "phenotype": "reduced_virulence",
+      "function": "Indole-3-acetaldehyde dehydrogenase"
+    },
+    {
+      "gene_id": "SPSC_05672",
+      "phi_id": "PHI:2517",
+      "pathogen": "Aspergillus_fumigatus",
+      "phenotype": "lethal",
+      "function": "Tryptophan synthase"
+    },
+    {
+      "gene_id": "SPSC_06226",
+      "phi_id": "PHI:2411",
+      "pathogen": "Sclerotinia_sclerotiorum",
+      "phenotype": "reduced_virulence",
+      "function": "Gamma-Glutamyl Transpeptidase"
+    },
+    {
+      "gene_id": "SPSC_00476",
+      "phi_id": "PHI:10949",
+      "pathogen": "Aspergillus_carbonarius",
+      "phenotype": "reduced_virulence",
+      "function": "GMC oxidoreductase"
+    },
+    {
+      "gene_id": "SPSC_06136",
+      "phi_id": "PHI:2968",
+      "pathogen": "Cryptococcus_neoformans",
+      "phenotype": "reduced_virulence",
+      "function": "Glucose uptake and transport"
+    },
+    {
+      "gene_id": "SPSC_06044",
+      "phi_id": "PHI:9816",
+      "pathogen": "Ralstonia_solanacearum",
+      "phenotype": "reduced_virulence",
+      "function": "Trehalose synthase"
+    },
+    {
+      "gene_id": "SPSC_02859",
+      "phi_id": "PHI:1655",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "transcription factor"
+    },
+    {
+      "gene_id": "SPSC_04954",
+      "phi_id": "PHI:158",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Protein kinase"
+    },
+    {
+      "gene_id": "SPSC_00283",
+      "phi_id": "PHI:785",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "Hypothetical protein"
+    },
+    {
+      "gene_id": "SPSC_01034",
+      "phi_id": "PHI:4024",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "hexose transporter-like protein"
+    },
+    {
+      "gene_id": "SPSC_03154",
+      "phi_id": "PHI:4024",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "hexose transporter-like protein"
+    },
+    {
+      "gene_id": "SPSC_02096",
+      "phi_id": "PHI:7173",
+      "pathogen": "Verticillium_dahliae",
+      "phenotype": "reduced_virulence",
+      "function": "Isotrichodermin C-15 hydroxylase"
+    },
+    {
+      "gene_id": "SPSC_02261",
+      "phi_id": "PHI:4906",
+      "pathogen": "Candida_albicans",
+      "phenotype": "reduced_virulence",
+      "function": "A Golgi-associated protein"
+    },
+    {
+      "gene_id": "SPSC_00426",
+      "phi_id": "PHI:824",
+      "pathogen": "Burkholderia_glumae",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "DNA gyrase (bacterial topoisomerase II)"
+    },
+    {
+      "gene_id": "SPSC_00297",
+      "phi_id": "PHI:6227",
+      "pathogen": "Colletotrichum_graminicola",
+      "phenotype": "reduced_virulence",
+      "function": "beta-1,6-glucan synthesis"
+    },
+    {
+      "gene_id": "SPSC_01291",
+      "phi_id": "PHI:9204",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "Signal peptide peptidase"
+    },
+    {
+      "gene_id": "SPSC_04199",
+      "phi_id": "PHI:465",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Kinesin"
+    },
+    {
+      "gene_id": "SPSC_05072",
+      "phi_id": "PHI:2488",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "a-1,2-mannosidase"
+    },
+    {
+      "gene_id": "SPSC_04985",
+      "phi_id": "PHI:1511",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "reduced_virulence",
+      "function": "transcription factor"
+    },
+    {
+      "gene_id": "SPSC_03144",
+      "phi_id": "PHI:9041",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "reduced_virulence",
+      "function": "Hypothetical protein"
+    },
+    {
+      "gene_id": "SPSC_03434",
+      "phi_id": "PHI:1273",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "protein kinase"
+    },
+    {
+      "gene_id": "SPSC_01526",
+      "phi_id": "PHI:394",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "CDK-related kinase"
+    },
+    {
+      "gene_id": "SPSC_04447",
+      "phi_id": "PHI:10606",
+      "pathogen": "Pseudomonas_aeruginosa",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Long-chain-fatty-acid?CoAligase"
+    },
+    {
+      "gene_id": "SPSC_05662",
+      "phi_id": "PHI:2976",
+      "pathogen": "Colletotrichum_gloeosporioides",
+      "phenotype": "reduced_virulence",
+      "function": "Oligopeptide transporters of the OPT family"
+    },
+    {
+      "gene_id": "SPSC_01798",
+      "phi_id": "PHI:2976",
+      "pathogen": "Colletotrichum_gloeosporioides",
+      "phenotype": "reduced_virulence",
+      "function": "Oligopeptide transporters of the OPT family"
+    },
+    {
+      "gene_id": "SPSC_05063",
+      "phi_id": "PHI:66",
+      "pathogen": "Candida_albicans",
+      "phenotype": "reduced_virulence",
+      "function": "Tyrosine phosphatase"
+    },
+    {
+      "gene_id": "SPSC_05614",
+      "phi_id": "PHI:464",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Kinesin"
+    },
+    {
+      "gene_id": "SPSC_03976",
+      "phi_id": "PHI:464",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Kinesin"
+    },
+    {
+      "gene_id": "SPSC_04636",
+      "phi_id": "PHI:1109",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Chitin Synthase"
+    },
+    {
+      "gene_id": "SPSC_01757",
+      "phi_id": "PHI:2240",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Sucrose Transporter"
+    },
+    {
+      "gene_id": "SPSC_04589",
+      "phi_id": "PHI:7324",
+      "pathogen": "Puccinia_striiformis",
+      "phenotype": "reduced_virulence",
+      "function": "Calmodulin-dependent protein kinase"
+    },
+    {
+      "gene_id": "SPSC_00088",
+      "phi_id": "PHI:3190",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Part of the largest Effector Gene Cluster"
+    },
+    {
+      "gene_id": "SPSC_00097",
+      "phi_id": "PHI:958",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "hypothetical protein"
+    },
+    {
+      "gene_id": "SPSC_05794",
+      "phi_id": "PHI:68",
+      "pathogen": "Candida_albicans",
+      "phenotype": "reduced_virulence",
+      "function": "Aspartyl proteinase"
+    },
+    {
+      "gene_id": "SPSC_01537",
+      "phi_id": "PHI:6124",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "reduced_virulence",
+      "function": null
+    },
+    {
+      "gene_id": "SPSC_03542",
+      "phi_id": "PHI:754",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "increased_virulence_(hypervirulence)",
+      "function": "conserved hypothetical Ustilago-specific protein"
+    },
+    {
+      "gene_id": "SPSC_03543",
+      "phi_id": "PHI:754",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "increased_virulence_(hypervirulence)",
+      "function": "conserved hypothetical Ustilago-specific protein"
+    },
+    {
+      "gene_id": "SPSC_03285",
+      "phi_id": "PHI:6346",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "Effector"
+    },
+    {
+      "gene_id": "SPSC_03541",
+      "phi_id": "PHI:755",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "increased_virulence_(hypervirulence)",
+      "function": "conserved hypothetical Ustilago-specific protein"
+    },
+    {
+      "gene_id": "SPSC_00084",
+      "phi_id": "PHI:942",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "hypothetical protein"
+    },
+    {
+      "gene_id": "SPSC_00095",
+      "phi_id": "PHI:954",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "reduced_virulence",
+      "function": "conserved hypothetical Ustilago-specific protein"
+    },
+    {
+      "gene_id": "SPSC_04308",
+      "phi_id": "PHI:9456",
+      "pathogen": "Orbilia_oligospora",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Velvet family protein"
+    },
+    {
+      "gene_id": "SPSC_00940",
+      "phi_id": "PHI:124",
+      "pathogen": "Candida_albicans",
+      "phenotype": "reduced_virulence",
+      "function": "Integrin"
+    },
+    {
+      "gene_id": "SPSC_02721",
+      "phi_id": "PHI:1230",
+      "pathogen": "Fusarium_graminearum",
+      "phenotype": "lethal",
+      "function": "protein kinase"
+    },
+    {
+      "gene_id": "SPSC_04878",
+      "phi_id": "PHI:9509",
+      "pathogen": "Coxiella_burnetii",
+      "phenotype": "unaffected_pathogenicity",
+      "function": "Glucose/galactose transporter"
+    },
+    {
+      "gene_id": "SPSC_04455",
+      "phi_id": "PHI:1063",
+      "pathogen": "Magnaporthe_oryzae",
+      "phenotype": "reduced_virulence",
+      "function": "nonhistone protein containing an HMG1 box"
+    },
+    {
+      "gene_id": "SPSC_03828",
+      "phi_id": "PHI:269",
+      "pathogen": "Ustilago_maydis",
+      "phenotype": "loss_of_pathogenicity",
+      "function": "GTP-binding protein"
+    }
+  ],
+  "statistics": {
+    "total_mepurple": 41,
+    "total_phi_matches": 96,
+    "total_unique_genes": 183
+  }
+}

@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell Simulator - Consequencias Celulares</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #050510;
+            --panel: rgba(10, 15, 30, 0.95);
+            --border: rgba(78, 205, 196, 0.2);
+            --cyan: #4ecdc4;
+            --pink: #e94560;
+            --yellow: #f39c12;
+            --green: #2ecc71;
+            --purple: #9b59b6;
+            --orange: #e67e22;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: #e0e0e0;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #container { width: 100vw; height: 100vh; }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 50px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 .icon { font-size: 1.3rem; }
+
+        .header .badge {
+            background: linear-gradient(135deg, var(--cyan), var(--green));
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Left Panel - Gene Selection */
+        .left-panel {
+            position: fixed;
+            top: 60px; left: 10px; bottom: 10px;
+            width: 280px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-section {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-section:last-child { border-bottom: none; }
+
+        .panel-section h3 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--cyan);
+            margin-bottom: 12px;
+        }
+
+        /* Gene List */
+        .gene-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .gene-category {
+            margin-bottom: 15px;
+        }
+
+        .gene-category-title {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
+        .gene-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .gene-item:hover {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: var(--border);
+        }
+
+        .gene-item.selected {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: var(--cyan);
+        }
+
+        .gene-item .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .gene-item .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .gene-item .desc {
+            font-size: 0.7rem;
+            color: #666;
+            margin-left: auto;
+        }
+
+        /* Right Panel - Controls */
+        .right-panel {
+            position: fixed;
+            top: 60px; right: 10px;
+            width: 300px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            z-index: 90;
+            overflow: hidden;
+        }
+
+        /* Regulation Slider */
+        .regulation-control {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .regulation-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+        }
+
+        .regulation-label .value {
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        .regulation-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            appearance: none;
+            background: linear-gradient(90deg,
+                var(--pink) 0%,
+                #333 50%,
+                var(--green) 100%
+            );
+            cursor: pointer;
+        }
+
+        .regulation-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--cyan);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+
+        .regulation-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        /* Consequences Panel */
+        .consequences {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .consequence-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .consequence-item.active {
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .consequence-item .icon {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+        }
+
+        .consequence-item .info {
+            flex: 1;
+        }
+
+        .consequence-item .name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .consequence-item .detail {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .consequence-item .level {
+            width: 60px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .consequence-item .level-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        /* Bottom Panel - Network Preview */
+        .bottom-panel {
+            position: fixed;
+            bottom: 10px; left: 300px; right: 320px;
+            height: 150px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            z-index: 90;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .network-preview {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .network-preview h4 {
+            font-size: 0.7rem;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .pathway-flow {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+            font-size: 0.75rem;
+        }
+
+        .pathway-node {
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .pathway-node.active {
+            background: var(--cyan);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .pathway-node.activated {
+            background: var(--green);
+            color: #000;
+        }
+
+        .pathway-node.repressed {
+            background: var(--pink);
+            color: #fff;
+        }
+
+        .pathway-arrow {
+            color: #444;
+        }
+
+        /* Legend */
+        .legend {
+            padding: 15px;
+            border-left: 1px solid var(--border);
+            min-width: 150px;
+        }
+
+        .legend h4 {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 6px;
+            color: #888;
+        }
+
+        .legend-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        /* Presets */
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .preset-btn {
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: #aaa;
+        }
+
+        .preset-btn:hover {
+            background: rgba(78, 205, 196, 0.1);
+            border-color: var(--cyan);
+        }
+
+        .preset-btn.active {
+            background: rgba(78, 205, 196, 0.2);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .preset-btn .icon { font-size: 1.2rem; }
+        .preset-btn .name { font-size: 0.7rem; margin-top: 4px; }
+
+        .timelapse-btn {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(233, 69, 96, 0.1));
+        }
+        .timelapse-btn:hover {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(233, 69, 96, 0.2));
+        }
+        .timelapse-btn.playing {
+            animation: timelapse-pulse 1.5s ease-in-out infinite;
+            border-color: var(--green);
+            color: var(--green);
+        }
+        .timelapse-btn.playing .icon {
+            animation: icon-spin 2s linear infinite;
+        }
+        @keyframes timelapse-pulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(46, 204, 113, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(46, 204, 113, 0.6); }
+        }
+        @keyframes icon-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Info tooltip */
+        .info-tip {
+            position: fixed;
+            bottom: 170px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--panel);
+            border: 1px solid var(--cyan);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 0.8rem;
+            z-index: 100;
+            display: none;
+        }
+
+        .info-tip.show { display: block; }
+
+        /* Loading */
+        .loading {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading.hidden { display: none; }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(78, 205, 196, 0.2);
+            border-top-color: var(--cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading p { margin-top: 15px; color: var(--cyan); }
+
+        /* Back button */
+        .back-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: #888;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Carregando simulador...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1>
+            <span class="icon">⚡</span>
+            Cell Simulator
+            <span class="badge">BETA</span>
+        </h1>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <span style="font-size: 0.8rem; color: #666;">
+                Gene: <span id="currentGene" style="color: var(--cyan);">Nenhum</span>
+            </span>
+            <a href="index.html" class="back-btn">Voltar ao Hub</a>
+        </div>
+    </header>
+
+    <!-- Left Panel - Gene Selection -->
+    <aside class="left-panel">
+        <div class="panel-section">
+            <h3>Cenarios Pre-definidos</h3>
+            <div class="preset-buttons">
+                <div class="preset-btn" data-preset="pti">
+                    <div class="icon">🛡️</div>
+                    <div class="name">PTI Ativa</div>
+                </div>
+                <div class="preset-btn" data-preset="eti">
+                    <div class="icon">💥</div>
+                    <div class="name">ETI (HR)</div>
+                </div>
+                <div class="preset-btn" data-preset="effector">
+                    <div class="icon">🦠</div>
+                    <div class="name">Ataque Efetor</div>
+                </div>
+                <div class="preset-btn" data-preset="ros">
+                    <div class="icon">🔥</div>
+                    <div class="name">ROS Burst</div>
+                </div>
+            </div>
+            <div class="preset-buttons" style="margin-top: 10px;">
+                <div class="preset-btn timelapse-btn" data-preset="timelapse" style="width: 100%;">
+                    <div class="icon">▶️</div>
+                    <div class="name">Timelapse Infeccao</div>
+                </div>
+            </div>
+            <div id="timelapseStatus" style="display: none; margin-top: 10px; padding: 8px; background: rgba(78, 205, 196, 0.1); border-radius: 6px; font-size: 0.8rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span id="timelapsePhase">Fase: --</span>
+                    <button id="stopTimelapse" style="background: var(--pink); border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Parar</button>
+                </div>
+                <div style="margin-top: 6px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
+                    <div id="timelapseProgress" style="height: 100%; width: 0%; background: var(--cyan); border-radius: 2px; transition: width 0.3s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>Selecionar Gene</h3>
+        </div>
+
+        <div class="gene-list" id="geneList">
+            <!-- Populated by JavaScript -->
+        </div>
+    </aside>
+
+    <!-- Right Panel - Controls -->
+    <aside class="right-panel">
+        <div class="regulation-control">
+            <div class="regulation-label">
+                <span>Nivel de Regulacao</span>
+                <span class="value" id="regValue">0</span>
+            </div>
+            <input type="range" class="regulation-slider" id="regulation"
+                   min="-100" max="100" value="0">
+            <div class="regulation-labels">
+                <span style="color: var(--pink);">Repressao</span>
+                <span>Basal</span>
+                <span style="color: var(--green);">Ativacao</span>
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <h3>Consequencias Celulares</h3>
+        </div>
+
+        <div class="consequences" id="consequences">
+            <div class="consequence-item" data-effect="membrane">
+                <span class="icon">🔵</span>
+                <div class="info">
+                    <div class="name">Membrana</div>
+                    <div class="detail">Permeabilidade</div>
+                </div>
+                <div class="level">
+                    <div class="level-bar" style="width: 50%; background: var(--cyan);"></div>
+                </div>
+            </div>
+            <div class="consequence-item" data-effect="ros">
+                <span class="icon">🔥</span>
+                <div class="info">
+                    <div class="name">ROS</div>
+                    <div class="detail">Especies reativas</div>
+                </div>
+                <div class="level">
+                    <div class="level-bar" style="width: 30%; background: var(--orange);"></div>
+                </div>
+            </div>
+            <div class="consequence-item" data-effect="defense">
+                <span class="icon">🛡️</span>
+                <div class="info">
+                    <div class="name">Defesa</div>
+                    <div class="detail">Genes PR</div>
+                </div>
+                <div class="level">
+                    <div class="level-bar" style="width: 40%; background: var(--green);"></div>
+                </div>
+            </div>
+            <div class="consequence-item" data-effect="signaling">
+                <span class="icon">⚡</span>
+                <div class="info">
+                    <div class="name">Sinalizacao</div>
+                    <div class="detail">MAPK cascade</div>
+                </div>
+                <div class="level">
+                    <div class="level-bar" style="width: 20%; background: var(--yellow);"></div>
+                </div>
+            </div>
+            <div class="consequence-item" data-effect="death">
+                <span class="icon">💀</span>
+                <div class="info">
+                    <div class="name">Morte Celular</div>
+                    <div class="detail">HR / PCD</div>
+                </div>
+                <div class="level">
+                    <div class="level-bar" style="width: 10%; background: var(--pink);"></div>
+                </div>
+            </div>
+            <div class="consequence-item" data-effect="pathogen">
+                <span class="icon">🦠</span>
+                <div class="info">
+                    <div class="name">Patogeno</div>
+                    <div class="detail">Penetracao</div>
+                </div>
+                <div class="level">
+                    <div class="level-bar" style="width: 60%; background: var(--purple);"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Bottom Panel - Network -->
+    <div class="bottom-panel">
+        <div class="network-preview">
+            <h4>Via de Sinalizacao Ativa</h4>
+            <div class="pathway-flow" id="pathwayFlow">
+                <span class="pathway-node" data-gene="FLS2">FLS2</span>
+                <span class="pathway-arrow">→</span>
+                <span class="pathway-node" data-gene="BAK1">BAK1</span>
+                <span class="pathway-arrow">→</span>
+                <span class="pathway-node" data-gene="MAPK">MAPK</span>
+                <span class="pathway-arrow">→</span>
+                <span class="pathway-node" data-gene="WRKY">WRKY</span>
+                <span class="pathway-arrow">→</span>
+                <span class="pathway-node" data-gene="PR">PR genes</span>
+                <span class="pathway-arrow">→</span>
+                <span class="pathway-node" data-gene="Defense">Defesa</span>
+            </div>
+        </div>
+        <div class="legend">
+            <h4>Legenda</h4>
+            <div class="legend-item">
+                <div class="dot" style="background: var(--cyan);"></div>
+                <span>Selecionado</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: var(--green);"></div>
+                <span>Ativado</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: var(--pink);"></div>
+                <span>Reprimido</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: #26c6da;"></div>
+                <span>Microtubulos</span>
+            </div>
+            <div class="legend-item">
+                <div class="dot" style="background: #f48fb1;"></div>
+                <span>Actina</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Tip -->
+    <div class="info-tip" id="infoTip"></div>
+
+    <!-- Scripts -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // =====================================================
+        // DATA - Gene Regulatory Network
+        // =====================================================
+
+        const geneData = {
+            categories: {
+                'PRR': { color: '#3498db', genes: ['FLS2', 'EFR', 'BAK1', 'CERK1'] },
+                'MAPK': { color: '#f39c12', genes: ['MPK3', 'MPK6', 'MPK4', 'MEKK1'] },
+                'TF': { color: '#9b59b6', genes: ['WRKY33', 'WRKY29', 'MYC2', 'TGA3'] },
+                'NLR': { color: '#e74c3c', genes: ['NRC2', 'NRC3', 'NRC4', 'RPM1'] },
+                'Defense': { color: '#2ecc71', genes: ['PR1', 'PR2', 'PDF1.2', 'PAD4'] },
+                'ROS': { color: '#e67e22', genes: ['RBOHD', 'SOD', 'CAT1', 'APX1'] },
+                'Effector': { color: '#c0392b', genes: ['AvrPto', 'AvrRpm1', 'HopAI1'] }
+            },
+            interactions: [
+                { source: 'FLS2', target: 'BAK1', type: 'activation' },
+                { source: 'BAK1', target: 'MPK3', type: 'activation' },
+                { source: 'BAK1', target: 'MPK6', type: 'activation' },
+                { source: 'MPK3', target: 'WRKY33', type: 'activation' },
+                { source: 'MPK6', target: 'WRKY29', type: 'activation' },
+                { source: 'WRKY33', target: 'PR1', type: 'activation' },
+                { source: 'WRKY29', target: 'PR2', type: 'activation' },
+                { source: 'MPK3', target: 'RBOHD', type: 'activation' },
+                { source: 'RBOHD', target: 'ROS', type: 'produces' },
+                { source: 'NRC2', target: 'HR', type: 'activation' },
+                { source: 'AvrPto', target: 'FLS2', type: 'repression' },
+                { source: 'AvrPto', target: 'BAK1', type: 'repression' },
+                { source: 'AvrRpm1', target: 'RPM1', type: 'recognized' },
+                { source: 'RPM1', target: 'NRC2', type: 'activation' }
+            ],
+            geneInfo: {
+                'FLS2': { full: 'Flagellin Sensing 2', location: 'membrane', effect: 'defense' },
+                'BAK1': { full: 'BRI1-Associated Kinase 1', location: 'membrane', effect: 'signaling' },
+                'MPK3': { full: 'MAP Kinase 3', location: 'cytoplasm', effect: 'signaling' },
+                'MPK6': { full: 'MAP Kinase 6', location: 'cytoplasm', effect: 'signaling' },
+                'WRKY33': { full: 'WRKY TF 33', location: 'nucleus', effect: 'defense' },
+                'RBOHD': { full: 'Respiratory Burst Oxidase D', location: 'membrane', effect: 'ros' },
+                'PR1': { full: 'Pathogenesis-Related 1', location: 'apoplast', effect: 'defense' },
+                'NRC2': { full: 'NLR Required for Cell death 2', location: 'cytoplasm', effect: 'death' },
+                'AvrPto': { full: 'Avirulence Pto', location: 'cytoplasm', effect: 'pathogen' },
+                'AvrRpm1': { full: 'Avirulence Rpm1', location: 'cytoplasm', effect: 'pathogen' }
+            }
+        };
+
+        // Cell state - valores iniciais (baseline)
+        const INITIAL_CELL_STATE = {
+            membrane: 50,
+            ros: 30,
+            defense: 40,
+            signaling: 20,
+            death: 10,
+            pathogen: 60
+        };
+
+        // Cell state (mutável)
+        let cellState = { ...INITIAL_CELL_STATE };
+
+        // Reset cell state to initial values
+        function resetCellState() {
+            cellState = { ...INITIAL_CELL_STATE };
+
+            // Reset pathogen position and scale visually
+            if (pathogen) {
+                pathogen.position.y = 6;
+                pathogen.scale.set(1, 1, 1);
+                pathogen.userData.lastPulse = 1;
+                // Reset cor do patogeno
+                if (pathogen.children[0]) {
+                    pathogen.children[0].material.color.setHex(0xc62828);
+                    pathogen.children[0].material.emissiveIntensity = 0.3;
+                }
+            }
+
+            // Reset bloom
+            if (bloomPass) {
+                bloomPass.strength = 0.5;
+            }
+        }
+
+        // =====================================================
+        // THREE.JS SETUP
+        // =====================================================
+
+        let scene, camera, renderer, controls, composer, bloomPass;
+        let clock = new THREE.Clock();
+
+        // Cell components
+        let cellWall, membrane, nucleus, mitochondria = [], chloroplasts = [];
+        let particles, pathogen;
+        let cytoskeleton = { microtubules: [], actinFilaments: [] };
+
+        // Selected gene
+        let selectedGene = null;
+        let regulationLevel = 0;
+
+        function init() {
+            const container = document.getElementById('container');
+
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x050510);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(15, 10, 20);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            container.appendChild(renderer.domElement);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.target.set(0, 0, 0);
+
+            // Post-processing
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                1.0, 0.4, 0.85
+            );
+            composer.addPass(bloomPass);
+
+            // Lighting
+            setupLighting();
+
+            // Create cell
+            createPlantCell();
+
+            // UI
+            setupUI();
+
+            // Hide loading
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+            }, 500);
+
+            // Animate
+            animate();
+        }
+
+        function setupLighting() {
+            scene.add(new THREE.AmbientLight(0x202030, 0.5));
+
+            const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+            mainLight.position.set(10, 20, 10);
+            scene.add(mainLight);
+
+            const greenLight = new THREE.PointLight(0x4ecdc4, 1, 30);
+            greenLight.position.set(-10, 5, 10);
+            scene.add(greenLight);
+
+            const pinkLight = new THREE.PointLight(0xe94560, 0.5, 20);
+            pinkLight.position.set(10, -5, -10);
+            scene.add(pinkLight);
+        }
+
+        // =====================================================
+        // PLANT CELL CREATION (estilo organico)
+        // =====================================================
+
+        function createPlantCell() {
+            // Cell wall - usando esfera achatada ao inves de caixa
+            // Mais organico, sem arestas duras
+            const wallGeom = new THREE.SphereGeometry(8, 64, 64);
+            wallGeom.scale(1.0, 0.7, 0.7); // Achata para formato celular
+
+            const wallMat = new THREE.MeshPhysicalMaterial({
+                color: 0x8bc34a,
+                roughness: 0.6,
+                metalness: 0.0,
+                transparent: true,
+                opacity: 0.15,  // Mais sutil
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            cellWall = new THREE.Mesh(wallGeom, wallMat);
+            scene.add(cellWall);
+
+            // Borda suave da parede celular (linhas pontilhadas sutis)
+            const wallBorderMat = new THREE.MeshPhysicalMaterial({
+                color: 0x689f38,
+                roughness: 0.4,
+                metalness: 0.1,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.DoubleSide,
+                wireframe: true
+            });
+            const wallBorder = new THREE.Mesh(wallGeom.clone(), wallBorderMat);
+            wallBorder.scale.set(1.01, 1.01, 1.01);
+            scene.add(wallBorder);
+
+            // Plasma membrane - esfera interna, mais visivel
+            const membraneGeom = new THREE.SphereGeometry(7.2, 64, 64);
+            membraneGeom.scale(1.0, 0.7, 0.7);
+
+            const membraneMat = new THREE.MeshPhysicalMaterial({
+                color: 0x4dd0e1,
+                roughness: 0.1,
+                metalness: 0.0,
+                transparent: true,
+                opacity: 0.08,
+                transmission: 0.9,
+                thickness: 0.2,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            membrane = new THREE.Mesh(membraneGeom, membraneMat);
+            scene.add(membrane);
+
+            // Nucleus (large, central)
+            createNucleus();
+
+            // Chloroplasts (green, disc-shaped)
+            createChloroplasts();
+
+            // Mitochondria (orange, elongated)
+            createMitochondria();
+
+            // Vacuole (large, transparent)
+            createVacuole();
+
+            // ER network
+            createER();
+
+            // Cytoskeleton (microtubules + actin)
+            createCytoskeleton();
+
+            // Particles (ribosomes, vesicles)
+            createParticles();
+
+            // Pathogen
+            createPathogen();
+        }
+
+        // DNA Helix dentro do nucleo
+        let dnaHelix;
+
+        function createNucleus() {
+            const group = new THREE.Group();
+
+            // Nuclear envelope - VIDRO transparente
+            const envGeom = new THREE.SphereGeometry(2.2, 48, 48);
+            const envMat = new THREE.MeshPhysicalMaterial({
+                color: 0xa5d6a7,
+                roughness: 0.0,
+                metalness: 0.0,
+                transparent: true,
+                opacity: 0.2,
+                transmission: 0.95,  // Muito transparente (vidro)
+                thickness: 0.3,
+                ior: 1.1,  // Indice de refracao
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+            const envelope = new THREE.Mesh(envGeom, envMat);
+            group.add(envelope);
+
+            // Brilho externo do envelope
+            const glowGeom = new THREE.SphereGeometry(2.3, 32, 32);
+            const glowMat = new THREE.MeshBasicMaterial({
+                color: 0x81c784,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeom, glowMat);
+            group.add(glow);
+
+            // CROMATINA dentro do nucleo (biologicamente correto)
+            // Em escala nuclear, DNA aparece como cromatina difusa
+            createChromatin(group);
+
+            // Nucleolus (pequena esfera densa)
+            const nucGeom = new THREE.SphereGeometry(0.5, 24, 24);
+            const nucMat = new THREE.MeshStandardMaterial({
+                color: 0x558b2f,
+                roughness: 0.4,
+                emissive: 0x33691e,
+                emissiveIntensity: 0.4
+            });
+            const nucleolus = new THREE.Mesh(nucGeom, nucMat);
+            group.add(nucleolus);
+
+            // Nuclear pores (spikes)
+            for (let i = 0; i < 30; i++) {
+                const phi = Math.acos(-1 + (2 * i) / 30);
+                const theta = Math.sqrt(30 * Math.PI) * phi;
+
+                const spikeGeom = new THREE.CylinderGeometry(0.03, 0.08, 0.5, 6);
+                const spikeMat = new THREE.MeshStandardMaterial({
+                    color: 0xaed581,
+                    emissive: 0x7cb342,
+                    emissiveIntensity: 0.5
+                });
+                const spike = new THREE.Mesh(spikeGeom, spikeMat);
+
+                spike.position.setFromSphericalCoords(2, phi, theta);
+                spike.lookAt(0, 0, 0);
+                group.add(spike);
+            }
+
+            group.position.set(0, 0, 0);
+            nucleus = group;
+            scene.add(nucleus);
+        }
+
+        function createChromatin(parentGroup) {
+            // CROMATINA - representacao biologicamente correta
+            // Em escala nuclear, DNA aparece como cromatina difusa
+            // Eucromatina: genes ativos (centro), Heterocromatina: genes silenciados (periferia)
+
+            const chromatinGroup = new THREE.Group();
+
+            // Eucromatina (centro do nucleo) - particulas difusas
+            const euchromatinMat = new THREE.MeshStandardMaterial({
+                color: 0x7c4dff,
+                emissive: 0x651fff,
+                emissiveIntensity: 0.5,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            for (let i = 0; i < 60; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                const r = Math.pow(Math.random(), 0.6) * 1.5;
+
+                const size = 0.04 + Math.random() * 0.06;
+                const spotGeo = new THREE.SphereGeometry(size, 6, 6);
+                const spot = new THREE.Mesh(spotGeo, euchromatinMat);
+
+                spot.position.setFromSphericalCoords(r, phi, theta);
+                chromatinGroup.add(spot);
+            }
+
+            // Heterocromatina (periferia) - mais densa
+            const heterochromatinMat = new THREE.MeshStandardMaterial({
+                color: 0x4a148c,
+                emissive: 0x311b92,
+                emissiveIntensity: 0.4,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            for (let i = 0; i < 30; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(Math.random() * 2 - 1);
+                const r = 1.4 + Math.random() * 0.4;
+
+                const size = 0.06 + Math.random() * 0.1;
+                const spotGeo = new THREE.SphereGeometry(size, 6, 6);
+                const spot = new THREE.Mesh(spotGeo, heterochromatinMat);
+
+                spot.position.setFromSphericalCoords(r, phi, theta);
+                chromatinGroup.add(spot);
+            }
+
+            // Territorios cromossomicos (regioes coloridas distintas)
+            const territories = [
+                { color: 0x2196f3, pos: [0.6, 0.4, 0.2] },
+                { color: 0x4caf50, pos: [-0.5, 0.3, -0.4] },
+                { color: 0xff9800, pos: [0.2, -0.6, 0.3] }
+            ];
+
+            territories.forEach(t => {
+                const tGeo = new THREE.SphereGeometry(0.25, 10, 10);
+                const tMat = new THREE.MeshStandardMaterial({
+                    color: t.color,
+                    emissive: t.color,
+                    emissiveIntensity: 0.3,
+                    transparent: true,
+                    opacity: 0.45
+                });
+                const territory = new THREE.Mesh(tGeo, tMat);
+                territory.position.set(...t.pos);
+                territory.scale.set(1.1, 0.9, 1.2);
+                chromatinGroup.add(territory);
+            });
+
+            dnaHelix = chromatinGroup; // Reusar variavel para animacao
+            parentGroup.add(chromatinGroup);
+        }
+
+        function createChloroplasts() {
+            const positions = [
+                { x: -4, y: 2, z: 2 },
+                { x: 4, y: -1, z: 3 },
+                { x: -3, y: -2, z: -2 },
+                { x: 3, y: 2, z: -3 },
+                { x: -5, y: 0, z: 0 },
+                { x: 5, y: 1, z: 1 }
+            ];
+
+            positions.forEach(pos => {
+                const group = new THREE.Group();
+
+                // Outer membrane (disc)
+                const outerGeom = new THREE.CylinderGeometry(0.8, 0.8, 0.3, 16);
+                const outerMat = new THREE.MeshPhysicalMaterial({
+                    color: 0x66bb6a,
+                    roughness: 0.3,
+                    metalness: 0.1,
+                    emissive: 0x43a047,
+                    emissiveIntensity: 0.3
+                });
+                const outer = new THREE.Mesh(outerGeom, outerMat);
+                group.add(outer);
+
+                // Grana (stacked discs inside)
+                for (let i = 0; i < 3; i++) {
+                    const granaGeom = new THREE.TorusGeometry(0.3 + i * 0.15, 0.05, 8, 16);
+                    const granaMat = new THREE.MeshStandardMaterial({
+                        color: 0x2e7d32,
+                        emissive: 0x1b5e20,
+                        emissiveIntensity: 0.5
+                    });
+                    const grana = new THREE.Mesh(granaGeom, granaMat);
+                    grana.rotation.x = Math.PI / 2;
+                    group.add(grana);
+                }
+
+                group.position.set(pos.x, pos.y, pos.z);
+                group.rotation.set(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI
+                );
+
+                chloroplasts.push(group);
+                scene.add(group);
+            });
+        }
+
+        function createMitochondria() {
+            const positions = [
+                { x: 3, y: 3, z: 1 },
+                { x: -4, y: -3, z: 2 },
+                { x: 2, y: -2, z: -3 },
+                { x: -2, y: 3, z: -2 }
+            ];
+
+            positions.forEach(pos => {
+                const group = new THREE.Group();
+
+                // Outer membrane
+                const outerGeom = new THREE.CapsuleGeometry(0.4, 1, 8, 16);
+                const outerMat = new THREE.MeshPhysicalMaterial({
+                    color: 0xef6c00,
+                    roughness: 0.4,
+                    metalness: 0.2,
+                    emissive: 0xe65100,
+                    emissiveIntensity: 0.3
+                });
+                const outer = new THREE.Mesh(outerGeom, outerMat);
+                group.add(outer);
+
+                // Cristae
+                for (let i = 0; i < 5; i++) {
+                    const cristaGeom = new THREE.BoxGeometry(0.6, 0.03, 0.2);
+                    const cristaMat = new THREE.MeshStandardMaterial({
+                        color: 0xbf360c,
+                        emissive: 0x8d6e63,
+                        emissiveIntensity: 0.4
+                    });
+                    const crista = new THREE.Mesh(cristaGeom, cristaMat);
+                    crista.position.y = -0.4 + i * 0.2;
+                    group.add(crista);
+                }
+
+                group.position.set(pos.x, pos.y, pos.z);
+                group.rotation.set(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    0
+                );
+
+                mitochondria.push(group);
+                scene.add(group);
+            });
+        }
+
+        function createVacuole() {
+            const vacGeom = new THREE.SphereGeometry(3, 32, 32);
+            const vacMat = new THREE.MeshPhysicalMaterial({
+                color: 0xe3f2fd,
+                roughness: 0.1,
+                metalness: 0,
+                transparent: true,
+                opacity: 0.2,
+                transmission: 0.8,
+                thickness: 2
+            });
+            const vacuole = new THREE.Mesh(vacGeom, vacMat);
+            vacuole.position.set(-2, -1, 0);
+            vacuole.scale.set(1.2, 0.8, 1);
+            scene.add(vacuole);
+        }
+
+        function createER() {
+            // Tubular ER network
+            const erMat = new THREE.MeshStandardMaterial({
+                color: 0xffeb3b,
+                emissive: 0xffc107,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            // Create curved tubes
+            for (let i = 0; i < 8; i++) {
+                const points = [];
+                const startAngle = (i / 8) * Math.PI * 2;
+
+                for (let j = 0; j <= 10; j++) {
+                    const t = j / 10;
+                    const angle = startAngle + t * Math.PI;
+                    const r = 3 + Math.sin(t * Math.PI * 3) * 0.5;
+                    points.push(new THREE.Vector3(
+                        Math.cos(angle) * r,
+                        (t - 0.5) * 4,
+                        Math.sin(angle) * r
+                    ));
+                }
+
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeom = new THREE.TubeGeometry(curve, 20, 0.08, 8, false);
+                const tube = new THREE.Mesh(tubeGeom, erMat);
+                scene.add(tube);
+            }
+        }
+
+        function createCytoskeleton() {
+            // =====================================================
+            // CITOESQUELETO - Microtubulos (~25nm) e Actina (~5-7nm)
+            // Estrutura que sustenta a celula e permite transporte
+            // =====================================================
+
+            // Material para microtubulos (tubos rigidos, mais espessos)
+            const microtubuleMat = new THREE.MeshStandardMaterial({
+                color: 0x26c6da,  // Ciano
+                emissive: 0x00acc1,
+                emissiveIntensity: 0.3,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            // Material para actina (filamentos finos, flexiveis)
+            const actinMat = new THREE.MeshStandardMaterial({
+                color: 0xf48fb1,  // Rosa
+                emissive: 0xec407a,
+                emissiveIntensity: 0.2,
+                transparent: true,
+                opacity: 0.5
+            });
+
+            // -------------------------------------------------
+            // MICROTUBULOS: Partem do centro (MTOC) para a periferia
+            // -------------------------------------------------
+            const microtubuleCount = 12;
+            for (let i = 0; i < microtubuleCount; i++) {
+                const angle = (i / microtubuleCount) * Math.PI * 2;
+                const angleY = (Math.random() - 0.5) * Math.PI * 0.6;
+
+                // Pontos do microtubulo (curva suave do centro para a membrana)
+                const points = [];
+                const segmentos = 8;
+
+                for (let j = 0; j <= segmentos; j++) {
+                    const t = j / segmentos;
+                    const r = t * 6.5; // Do centro ate perto da membrana
+                    const wobble = Math.sin(t * Math.PI * 2) * 0.3; // Leve ondulacao
+
+                    points.push(new THREE.Vector3(
+                        Math.cos(angle + wobble * 0.1) * r,
+                        Math.sin(angleY) * r * 0.5 + wobble,
+                        Math.sin(angle + wobble * 0.1) * r
+                    ));
+                }
+
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeom = new THREE.TubeGeometry(curve, 16, 0.04, 6, false);
+                const tube = new THREE.Mesh(tubeGeom, microtubuleMat);
+                cytoskeleton.microtubules.push(tube);
+                scene.add(tube);
+            }
+
+            // Microtubulos conectando ao nucleo
+            for (let i = 0; i < 6; i++) {
+                const angle = (i / 6) * Math.PI * 2;
+                const points = [];
+
+                for (let j = 0; j <= 5; j++) {
+                    const t = j / 5;
+                    const r = 2.5 + t * 3;
+                    points.push(new THREE.Vector3(
+                        Math.cos(angle) * r,
+                        Math.sin(angle * 0.5) * t,
+                        Math.sin(angle) * r
+                    ));
+                }
+
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeom = new THREE.TubeGeometry(curve, 10, 0.035, 6, false);
+                const tube = new THREE.Mesh(tubeGeom, microtubuleMat);
+                cytoskeleton.microtubules.push(tube);
+                scene.add(tube);
+            }
+
+            // -------------------------------------------------
+            // ACTINA: Rede mais fina, distribuida no cortex (perto da membrana)
+            // Streaming citoplasmatico
+            // -------------------------------------------------
+            const actinCount = 20;
+            for (let i = 0; i < actinCount; i++) {
+                const startAngle = Math.random() * Math.PI * 2;
+                const startPhi = Math.random() * Math.PI;
+                const r = 5.5 + Math.random() * 1; // Proximo a membrana (cortex)
+
+                const points = [];
+                const segmentos = 6;
+                let currentAngle = startAngle;
+                let currentPhi = startPhi;
+
+                for (let j = 0; j <= segmentos; j++) {
+                    const variation = (Math.random() - 0.5) * 0.5;
+                    currentAngle += variation;
+                    currentPhi += (Math.random() - 0.5) * 0.3;
+
+                    const x = Math.sin(currentPhi) * Math.cos(currentAngle) * r * (1 - j * 0.02);
+                    const y = Math.cos(currentPhi) * r * 0.6;
+                    const z = Math.sin(currentPhi) * Math.sin(currentAngle) * r * (1 - j * 0.02);
+
+                    points.push(new THREE.Vector3(x, y, z));
+                }
+
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeom = new THREE.TubeGeometry(curve, 8, 0.02, 4, false);
+                const tube = new THREE.Mesh(tubeGeom, actinMat);
+                cytoskeleton.actinFilaments.push(tube);
+                scene.add(tube);
+            }
+
+            // Actina mais interna (streaming paths)
+            for (let i = 0; i < 8; i++) {
+                const points = [];
+                const startX = (Math.random() - 0.5) * 8;
+                const startY = (Math.random() - 0.5) * 4;
+                const startZ = (Math.random() - 0.5) * 8;
+
+                for (let j = 0; j <= 4; j++) {
+                    const t = j / 4;
+                    points.push(new THREE.Vector3(
+                        startX + Math.sin(t * Math.PI * 2) * 1.5,
+                        startY + (Math.random() - 0.5) * 0.5,
+                        startZ + Math.cos(t * Math.PI * 2) * 1.5
+                    ));
+                }
+
+                const curve = new THREE.CatmullRomCurve3(points);
+                const tubeGeom = new THREE.TubeGeometry(curve, 6, 0.015, 4, false);
+                const tube = new THREE.Mesh(tubeGeom, actinMat);
+                cytoskeleton.actinFilaments.push(tube);
+                scene.add(tube);
+            }
+        }
+
+        function createParticles() {
+            const count = 200;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+
+            const palette = [
+                new THREE.Color(0xf48fb1), // Pink (ribosomes)
+                new THREE.Color(0x4dd0e1), // Cyan (vesicles)
+                new THREE.Color(0xaed581), // Green
+                new THREE.Color(0xffcc80)  // Orange
+            ];
+
+            for (let i = 0; i < count; i++) {
+                // Random position inside cell
+                positions[i * 3] = (Math.random() - 0.5) * 12;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 8;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+
+                const color = palette[Math.floor(Math.random() * palette.length)];
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.15,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+        }
+
+        function createPathogen() {
+            const group = new THREE.Group();
+
+            // Main body
+            const bodyGeom = new THREE.SphereGeometry(1, 16, 16);
+            const bodyMat = new THREE.MeshPhysicalMaterial({
+                color: 0xc62828,
+                roughness: 0.3,
+                metalness: 0.2,
+                emissive: 0xb71c1c,
+                emissiveIntensity: 0.3
+            });
+            const body = new THREE.Mesh(bodyGeom, bodyMat);
+            group.add(body);
+
+            // Protrusions
+            for (let i = 0; i < 8; i++) {
+                const phi = Math.acos(-1 + (2 * i) / 8);
+                const theta = Math.sqrt(8 * Math.PI) * phi;
+
+                const protGeom = new THREE.ConeGeometry(0.15, 0.5, 6);
+                const prot = new THREE.Mesh(protGeom, bodyMat);
+                prot.position.setFromSphericalCoords(1, phi, theta);
+                prot.lookAt(0, 0, 0);
+                prot.rotateX(Math.PI);
+                group.add(prot);
+            }
+
+            group.position.set(0, 6, 0);
+            group.userData = { lastPulse: 1 };  // Para animacao de pulsacao
+            pathogen = group;
+            scene.add(pathogen);
+        }
+
+        // =====================================================
+        // UI SETUP
+        // =====================================================
+
+        function setupUI() {
+            // Populate gene list
+            const geneList = document.getElementById('geneList');
+            Object.entries(geneData.categories).forEach(([category, data]) => {
+                const catDiv = document.createElement('div');
+                catDiv.className = 'gene-category';
+                catDiv.innerHTML = `<div class="gene-category-title">${category}</div>`;
+
+                data.genes.forEach(gene => {
+                    const geneDiv = document.createElement('div');
+                    geneDiv.className = 'gene-item';
+                    geneDiv.dataset.gene = gene;
+                    geneDiv.innerHTML = `
+                        <span class="dot" style="background: ${data.color};"></span>
+                        <span class="name">${gene}</span>
+                        <span class="desc">${geneData.geneInfo[gene]?.location || ''}</span>
+                    `;
+                    geneDiv.addEventListener('click', () => selectGene(gene));
+                    catDiv.appendChild(geneDiv);
+                });
+
+                geneList.appendChild(catDiv);
+            });
+
+            // Regulation slider
+            document.getElementById('regulation').addEventListener('input', (e) => {
+                regulationLevel = parseInt(e.target.value);
+                document.getElementById('regValue').textContent = regulationLevel;
+                updateCellState();
+            });
+
+            // Preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    applyPreset(btn.dataset.preset);
+                });
+            });
+
+            // Window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                composer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        function selectGene(gene) {
+            selectedGene = gene;
+            document.getElementById('currentGene').textContent = gene;
+
+            // Update UI
+            document.querySelectorAll('.gene-item').forEach(item => {
+                item.classList.toggle('selected', item.dataset.gene === gene);
+            });
+
+            // Update pathway visualization
+            updatePathway(gene);
+
+            // Show tip
+            const info = geneData.geneInfo[gene];
+            if (info) {
+                showTip(`${gene}: ${info.full} - Localização: ${info.location}`);
+            }
+
+            updateCellState();
+        }
+
+        function updatePathway(gene) {
+            const nodes = document.querySelectorAll('.pathway-node');
+            nodes.forEach(node => {
+                node.classList.remove('active', 'activated', 'repressed');
+                if (node.dataset.gene === gene) {
+                    node.classList.add('active');
+                }
+            });
+        }
+
+        function applyPreset(preset) {
+            // IMPORTANTE: Resetar estado antes de aplicar novo cenário
+            resetCellState();
+            updateConsequenceUI();  // Atualizar UI com valores resetados
+
+            switch (preset) {
+                case 'pti':
+                    selectGene('FLS2');
+                    document.getElementById('regulation').value = 80;
+                    regulationLevel = 80;
+                    break;
+                case 'eti':
+                    selectGene('NRC2');
+                    document.getElementById('regulation').value = 100;
+                    regulationLevel = 100;
+                    break;
+                case 'effector':
+                    selectGene('AvrPto');
+                    document.getElementById('regulation').value = 70;
+                    regulationLevel = 70;
+                    break;
+                case 'ros':
+                    selectGene('RBOHD');
+                    document.getElementById('regulation').value = 90;
+                    regulationLevel = 90;
+                    break;
+                case 'timelapse':
+                    startTimelapse();
+                    return;  // Nao atualizar estado aqui
+            }
+            document.getElementById('regValue').textContent = regulationLevel;
+            updateCellState();
+        }
+
+        // =====================================================
+        // TIMELAPSE - Animacao automatica de infeccao
+        // =====================================================
+
+        let timelapseInterval = null;
+        let timelapsePhase = 0;
+
+        const TIMELAPSE_PHASES = [
+            {
+                name: 'Inicial',
+                desc: 'Patogeno se aproxima',
+                gene: null,
+                regulation: 0,
+                duration: 2000
+            },
+            {
+                name: 'Reconhecimento',
+                desc: 'PRR detecta PAMP',
+                gene: 'FLS2',
+                regulation: 30,
+                duration: 2500
+            },
+            {
+                name: 'PTI Ativa',
+                desc: 'Defesa basal ativada',
+                gene: 'FLS2',
+                regulation: 80,
+                duration: 3000
+            },
+            {
+                name: 'Ataque Efetor',
+                desc: 'Patogeno injeta efetores',
+                gene: 'AvrPto',
+                regulation: 70,
+                duration: 3000
+            },
+            {
+                name: 'Supressao',
+                desc: 'Defesa comprometida',
+                gene: 'FLS2',
+                regulation: -60,
+                duration: 2500
+            },
+            {
+                name: 'Reconhecimento ETI',
+                desc: 'NLR detecta efetor',
+                gene: 'NRC2',
+                regulation: 50,
+                duration: 2000
+            },
+            {
+                name: 'ROS Burst',
+                desc: 'Explosao oxidativa',
+                gene: 'RBOHD',
+                regulation: 90,
+                duration: 2500
+            },
+            {
+                name: 'HR Ativa',
+                desc: 'Morte celular programada',
+                gene: 'NRC2',
+                regulation: 100,
+                duration: 3000
+            },
+            {
+                name: 'Contencao',
+                desc: 'Patogeno contido',
+                gene: 'NRC2',
+                regulation: 100,
+                duration: 2000
+            }
+        ];
+
+        function startTimelapse() {
+            if (timelapseInterval) {
+                stopTimelapse();
+                return;
+            }
+
+            timelapsePhase = 0;
+            document.getElementById('timelapseStatus').style.display = 'block';
+            document.querySelector('.timelapse-btn').classList.add('playing');
+            document.querySelector('.timelapse-btn .icon').textContent = '⏸️';
+
+            // Botao de parar
+            document.getElementById('stopTimelapse').onclick = stopTimelapse;
+
+            runTimelapsePhase();
+        }
+
+        function runTimelapsePhase() {
+            if (timelapsePhase >= TIMELAPSE_PHASES.length) {
+                stopTimelapse();
+                showTip('Timelapse concluido! Patogeno contido pela resposta HR.');
+                return;
+            }
+
+            const phase = TIMELAPSE_PHASES[timelapsePhase];
+
+            // Atualizar UI de progresso
+            document.getElementById('timelapsePhase').innerHTML =
+                `<strong>${phase.name}</strong>: ${phase.desc}`;
+            document.getElementById('timelapseProgress').style.width =
+                `${((timelapsePhase + 1) / TIMELAPSE_PHASES.length) * 100}%`;
+
+            // Aplicar fase
+            if (phase.gene) {
+                selectGene(phase.gene);
+            }
+
+            // Animar slider suavemente
+            animateSlider(phase.regulation, phase.duration * 0.6);
+
+            // Proximo fase
+            timelapseInterval = setTimeout(() => {
+                timelapsePhase++;
+                runTimelapsePhase();
+            }, phase.duration);
+        }
+
+        function animateSlider(targetValue, duration) {
+            const slider = document.getElementById('regulation');
+            const startValue = parseInt(slider.value);
+            const startTime = performance.now();
+
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing suave
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentValue = Math.round(startValue + (targetValue - startValue) * easeProgress);
+
+                slider.value = currentValue;
+                regulationLevel = currentValue;
+                document.getElementById('regValue').textContent = currentValue;
+                updateCellState();
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        function stopTimelapse() {
+            if (timelapseInterval) {
+                clearTimeout(timelapseInterval);
+                timelapseInterval = null;
+            }
+            timelapsePhase = 0;
+            document.getElementById('timelapseStatus').style.display = 'none';
+            document.querySelector('.timelapse-btn').classList.remove('playing');
+            document.querySelector('.timelapse-btn .icon').textContent = '▶️';
+        }
+
+        function updateCellState() {
+            if (!selectedGene) return;
+
+            const info = geneData.geneInfo[selectedGene];
+            const effect = info?.effect || 'defense';
+            const factor = regulationLevel / 100;  // -1 a +1
+
+            // IMPORTANTE: Resetar para baseline antes de aplicar efeito
+            // Isso garante que slider em 0 = estado inicial
+            cellState = { ...INITIAL_CELL_STATE };
+
+            // Logica bidirecional:
+            // factor = +1 (ativacao maxima): efeito positivo do gene
+            // factor = 0 (basal): estado inicial
+            // factor = -1 (repressao maxima): efeito OPOSTO
+
+            switch (effect) {
+                case 'defense':
+                    // Ativar defesa: +defesa, +ros, -patogeno
+                    // Reprimir defesa: -defesa, -ros, +patogeno
+                    cellState.defense = 40 + factor * 50;     // 0→40, +1→90, -1→-10→0
+                    cellState.ros = 30 + factor * 25;         // 0→30, +1→55, -1→5
+                    cellState.pathogen = 60 - factor * 40;    // 0→60, +1→20, -1→100
+                    cellState.signaling = 20 + factor * 30;   // 0→20, +1→50, -1→-10→0
+                    break;
+
+                case 'signaling':
+                    // Ativar sinalizacao: cascade MAPK ativa
+                    // Reprimir: cascade bloqueada
+                    cellState.signaling = 20 + factor * 60;   // 0→20, +1→80, -1→-40→0
+                    cellState.defense = 40 + factor * 30;
+                    cellState.ros = 30 + factor * 20;
+                    break;
+
+                case 'ros':
+                    // ROS burst: dano oxidativo, pode causar morte celular
+                    // Reprimir ROS: celula mais vulneravel
+                    cellState.ros = 30 + factor * 60;         // +1→90 (burst)
+                    cellState.membrane = 50 + factor * 35;    // Dano membrana
+                    cellState.death = 10 + factor * 40;       // Pode causar HR
+                    cellState.defense = 40 + factor * 15;     // ROS ajuda defesa
+                    // Quando reprimido: patogeno avanca
+                    if (factor < 0) {
+                        cellState.pathogen = 60 - factor * 20;  // patogeno aumenta
+                    }
+                    break;
+
+                case 'death':
+                    // NLR/HR: morte celular programada para conter patogeno
+                    // Reprimir HR: patogeno se espalha
+                    cellState.death = 10 + factor * 80;       // +1→90 (HR total)
+                    cellState.membrane = 50 + factor * 40;    // Membrana compromete
+                    cellState.ros = 30 + factor * 30;         // ROS associado
+                    // Quando ativa: patogeno contido
+                    cellState.pathogen = 60 - factor * 50;    // +1→10, -1→100+→100
+                    cellState.defense = 40 + factor * 20;
+                    break;
+
+                case 'pathogen':
+                    // Efetor: patogeno suprime defesa
+                    // factor +1 = efetor ativo (ruim para planta)
+                    // factor -1 = efetor bloqueado (bom para planta)
+                    cellState.defense = 40 - factor * 35;     // +1→5 (suprimido)
+                    cellState.pathogen = 60 + factor * 35;    // +1→95 (penetra)
+                    cellState.signaling = 20 - factor * 18;   // +1→2 (bloqueado)
+                    cellState.ros = 30 - factor * 15;         // +1→15 (suprimido)
+                    // Quando efetor reprimido (-1): defesa funciona
+                    if (factor < 0) {
+                        cellState.death = 10 - factor * 20;   // HR pode ativar
+                    }
+                    break;
+            }
+
+            // Clamp valores entre 0-100
+            Object.keys(cellState).forEach(key => {
+                cellState[key] = Math.max(0, Math.min(100, cellState[key]));
+            });
+
+            // Update UI bars
+            updateConsequenceUI();
+
+            // Update 3D visualization
+            updateCellVisualization();
+        }
+
+        function updateConsequenceUI() {
+            document.querySelectorAll('.consequence-item').forEach(item => {
+                const effect = item.dataset.effect;
+                const value = cellState[effect];
+                const bar = item.querySelector('.level-bar');
+                bar.style.width = value + '%';
+
+                // Highlight active consequences
+                item.classList.toggle('active', value > 60);
+            });
+        }
+
+        function updateCellVisualization() {
+            // Update bloom based on activity
+            const avgActivity = (cellState.ros + cellState.signaling + cellState.defense) / 3;
+            bloomPass.strength = 0.5 + avgActivity / 100;
+
+            // Update membrane color based on state
+            if (membrane) {
+                const membraneColor = new THREE.Color().lerpColors(
+                    new THREE.Color(0x81d4fa),
+                    new THREE.Color(0xff5252),
+                    cellState.membrane / 100 - 0.5
+                );
+                membrane.material.color = membraneColor;
+                membrane.material.opacity = 0.3 + cellState.membrane / 200;
+            }
+
+            // Update pathogen position and size based on penetration
+            if (pathogen) {
+                const penetration = cellState.pathogen / 100;  // 0 a 1
+
+                // Posicao Y: quanto maior pathogen, mais perto da celula
+                const targetY = 6 - penetration * 5;  // 6 -> 1 (penetra mais)
+                pathogen.position.y += (targetY - pathogen.position.y) * 0.05;
+
+                // PROLIFERACAO: Escala aumenta com nivel de patogeno
+                // Baseline = 1.0, maximo = 2.0 (dobra de tamanho)
+                const targetScale = 0.6 + penetration * 1.4;  // 0.6 -> 2.0
+                const currentScale = pathogen.scale.x;
+                const newScale = currentScale + (targetScale - currentScale) * 0.05;
+                pathogen.scale.set(newScale, newScale, newScale);
+
+                // Cor e intensidade baseada em bloqueio ou proliferacao
+                const blocked = cellState.defense > 70;
+                const intensity = blocked ? 0.1 : 0.3 + penetration * 0.7;  // Mais vermelho quando ativo
+                pathogen.children[0].material.emissiveIntensity = intensity;
+
+                // Cor muda: vermelho escuro (bloqueado) -> vermelho vivo (proliferando)
+                const colorIntensity = blocked ? 0.3 : 0.5 + penetration * 0.5;
+                pathogen.children[0].material.color.setRGB(
+                    0.78 + colorIntensity * 0.22,  // Mais vermelho
+                    0.16 - colorIntensity * 0.1,   // Menos verde
+                    0.16 - colorIntensity * 0.1    // Menos azul
+                );
+            }
+        }
+
+        function showTip(message) {
+            const tip = document.getElementById('infoTip');
+            tip.textContent = message;
+            tip.classList.add('show');
+            setTimeout(() => tip.classList.remove('show'), 3000);
+        }
+
+        // =====================================================
+        // ANIMATION
+        // =====================================================
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = clock.getElapsedTime();
+
+            // Animate nucleus
+            if (nucleus) {
+                nucleus.rotation.y = time * 0.1;
+            }
+
+            // Animate cromatina (movimento sutil, organico)
+            if (dnaHelix) {
+                dnaHelix.rotation.y = time * 0.15;  // Rotacao lenta
+                dnaHelix.rotation.x = Math.sin(time * 0.1) * 0.05;  // Leve oscilacao
+            }
+
+            // Animate chloroplasts
+            chloroplasts.forEach((chloro, i) => {
+                chloro.rotation.z += 0.002;
+                chloro.position.y += Math.sin(time + i) * 0.002;
+            });
+
+            // Animate mitochondria
+            mitochondria.forEach((mito, i) => {
+                mito.rotation.x += 0.003;
+                mito.position.x += Math.sin(time * 0.5 + i) * 0.003;
+            });
+
+            // Animate particles
+            if (particles) {
+                const positions = particles.geometry.attributes.position.array;
+                for (let i = 0; i < positions.length; i += 3) {
+                    positions[i] += Math.sin(time + i) * 0.005;
+                    positions[i + 1] += Math.cos(time + i * 0.5) * 0.005;
+                }
+                particles.geometry.attributes.position.needsUpdate = true;
+
+                // ROS effect - more particles when ROS high
+                particles.material.opacity = 0.5 + cellState.ros / 200;
+                particles.material.size = 0.1 + cellState.ros / 500;
+            }
+
+            // Animate pathogen
+            if (pathogen) {
+                const penetration = cellState.pathogen / 100;
+
+                // Rotacao mais rapida quando proliferando
+                pathogen.rotation.y = time * (0.2 + penetration * 0.4);
+                pathogen.rotation.x = Math.sin(time * 0.5) * (0.1 + penetration * 0.15);
+
+                // Pulsacao de escala quando proliferando (ameaca visual)
+                if (penetration > 0.5) {
+                    const pulseIntensity = (penetration - 0.5) * 0.1;  // 0 a 0.05
+                    const pulse = 1 + Math.sin(time * 4) * pulseIntensity;
+                    pathogen.scale.multiplyScalar(pulse / pathogen.userData.lastPulse || 1);
+                    pathogen.userData.lastPulse = pulse;
+                }
+            }
+
+            // Animate cytoskeleton (streaming citoplasmatico)
+            if (cytoskeleton.actinFilaments.length > 0) {
+                cytoskeleton.actinFilaments.forEach((filament, i) => {
+                    // Leve pulsacao de opacidade (simula fluxo)
+                    filament.material.opacity = 0.4 + Math.sin(time * 2 + i) * 0.15;
+                });
+            }
+            if (cytoskeleton.microtubules.length > 0) {
+                // Microtubulos mais estaveis, apenas leve brilho
+                cytoskeleton.microtubules.forEach((mt, i) => {
+                    mt.material.emissiveIntensity = 0.2 + Math.sin(time + i * 0.5) * 0.1;
+                });
+            }
+
+            controls.update();
+            composer.render();
+        }
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        init();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRN Viewer - Bioinformatics Hub</title>
+
+    <!-- Cytoscape.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #16213e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0f3460;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: #e94560;
+        }
+
+        header h1 span {
+            color: #eee;
+            font-weight: normal;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        input, select, button {
+            padding: 8px 12px;
+            border: 1px solid #0f3460;
+            border-radius: 4px;
+            background: #16213e;
+            color: #eee;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        button {
+            background: #e94560;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #ff6b6b;
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #cy {
+            flex: 1;
+            background: #0f0f23;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: #16213e;
+            border-left: 2px solid #0f3460;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-section {
+            padding: 15px;
+            border-bottom: 1px solid #0f3460;
+        }
+
+        .sidebar-section h3 {
+            font-size: 0.95rem;
+            color: #e94560;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .stat-value {
+            color: #4ecca3;
+            font-weight: bold;
+        }
+
+        #node-info {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .node-detail {
+            margin-bottom: 10px;
+        }
+
+        .node-detail label {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .node-detail value {
+            display: block;
+            font-size: 0.95rem;
+            color: #eee;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px 15px;
+            background: #0f3460;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(22, 33, 62, 0.95);
+            padding: 30px 50px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .loading.hidden {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #0f3460;
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin: 10px;
+        }
+
+        .error.hidden {
+            display: none;
+        }
+
+        /* Tooltip */
+        .cy-tooltip {
+            position: absolute;
+            background: rgba(22, 33, 62, 0.95);
+            border: 1px solid #e94560;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 0.85rem;
+            max-width: 250px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GRN Viewer <span>- Bioinformatics Hub</span></h1>
+        <div class="controls">
+            <div class="control-group">
+                <label>API:</label>
+                <input type="text" id="api-url" value="http://localhost:8000" style="width: 180px;">
+            </div>
+            <div class="control-group">
+                <label>Network ID:</label>
+                <input type="number" id="network-id" value="1" style="width: 80px;">
+            </div>
+            <button id="btn-load">Carregar</button>
+            <div class="control-group">
+                <label>Layout:</label>
+                <select id="layout-select">
+                    <option value="cose">Cose (Force)</option>
+                    <option value="circle">Circular</option>
+                    <option value="concentric">Concentric</option>
+                    <option value="grid">Grid</option>
+                    <option value="breadthfirst">Hierarchical</option>
+                </select>
+            </div>
+            <button id="btn-fit">Fit</button>
+            <button id="btn-export">Export PNG</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div id="cy"></div>
+
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Estatisticas</h3>
+                <div class="stat-row">
+                    <span>Nodes</span>
+                    <span class="stat-value" id="stat-nodes">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Edges</span>
+                    <span class="stat-value" id="stat-edges">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Density</span>
+                    <span class="stat-value" id="stat-density">0</span>
+                </div>
+                <div class="stat-row">
+                    <span>Network</span>
+                    <span class="stat-value" id="stat-name">-</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Filtros</h3>
+                <div class="control-group" style="margin-bottom: 10px;">
+                    <label>Min Weight:</label>
+                    <input type="range" id="weight-filter" min="0" max="1" step="0.1" value="0" style="flex:1;">
+                    <span id="weight-value">0</span>
+                </div>
+                <div class="control-group">
+                    <label>Buscar Gene:</label>
+                    <input type="text" id="gene-search" placeholder="Ex: SPSC_04270" style="flex:1;">
+                </div>
+            </div>
+
+            <div id="node-info">
+                <h3 style="color: #e94560; margin-bottom: 15px;">Node Info</h3>
+                <p style="color: #888; font-size: 0.9rem;">Clique em um node para ver detalhes</p>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e94560;"></div>
+                    <span>TF/Hub</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4ecca3;"></div>
+                    <span>Target</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3498db;"></div>
+                    <span>Activation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e74c3c;"></div>
+                    <span>Repression</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Carregando rede...</p>
+    </div>
+
+    <div class="error hidden" id="error"></div>
+
+    <script>
+        // =============================================
+        // CYTOSCAPE INITIALIZATION
+        // =============================================
+
+        let cy = cytoscape({
+            container: document.getElementById('cy'),
+
+            style: [
+                // Nodes
+                {
+                    selector: 'node',
+                    style: {
+                        'background-color': '#4ecca3',
+                        'label': 'data(label)',
+                        'color': '#fff',
+                        'text-valign': 'center',
+                        'text-halign': 'center',
+                        'font-size': '10px',
+                        'width': 'mapData(degree, 0, 20, 30, 80)',
+                        'height': 'mapData(degree, 0, 20, 30, 80)',
+                        'border-width': 2,
+                        'border-color': '#16213e'
+                    }
+                },
+                // Hub/TF nodes
+                {
+                    selector: 'node[is_tf = "true"]',
+                    style: {
+                        'background-color': '#e94560',
+                        'shape': 'diamond'
+                    }
+                },
+                // Selected node
+                {
+                    selector: 'node:selected',
+                    style: {
+                        'border-width': 4,
+                        'border-color': '#fff'
+                    }
+                },
+                // Edges
+                {
+                    selector: 'edge',
+                    style: {
+                        'width': 'mapData(weight, 0, 1, 1, 5)',
+                        'line-color': '#3498db',
+                        'target-arrow-color': '#3498db',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'opacity': 0.7
+                    }
+                },
+                // Repression edges
+                {
+                    selector: 'edge[regulation_type = "repression"]',
+                    style: {
+                        'line-color': '#e74c3c',
+                        'target-arrow-color': '#e74c3c',
+                        'target-arrow-shape': 'tee'
+                    }
+                },
+                // Highlighted
+                {
+                    selector: '.highlighted',
+                    style: {
+                        'background-color': '#f1c40f',
+                        'line-color': '#f1c40f',
+                        'target-arrow-color': '#f1c40f',
+                        'transition-property': 'background-color, line-color',
+                        'transition-duration': '0.3s'
+                    }
+                },
+                // Faded
+                {
+                    selector: '.faded',
+                    style: {
+                        'opacity': 0.15
+                    }
+                }
+            ],
+
+            layout: { name: 'cose' },
+
+            minZoom: 0.1,
+            maxZoom: 3,
+            wheelSensitivity: 0.3
+        });
+
+        // =============================================
+        // API FUNCTIONS
+        // =============================================
+
+        async function loadNetwork() {
+            const apiUrl = document.getElementById('api-url').value;
+            const networkId = document.getElementById('network-id').value;
+
+            showLoading(true);
+            hideError();
+
+            try {
+                // Fetch graph data
+                const response = await fetch(`${apiUrl}/api/v1/grn/${networkId}/graph`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                // Clear existing
+                cy.elements().remove();
+
+                // Add elements
+                if (data.elements) {
+                    // Calculate degrees
+                    const degrees = {};
+                    (data.elements.edges || []).forEach(edge => {
+                        degrees[edge.data.source] = (degrees[edge.data.source] || 0) + 1;
+                        degrees[edge.data.target] = (degrees[edge.data.target] || 0) + 1;
+                    });
+
+                    // Add nodes with degree
+                    (data.elements.nodes || []).forEach(node => {
+                        node.data.degree = degrees[node.data.id] || 0;
+                        cy.add({ group: 'nodes', data: node.data, position: node.position });
+                    });
+
+                    // Add edges
+                    (data.elements.edges || []).forEach(edge => {
+                        cy.add({ group: 'edges', data: edge.data });
+                    });
+                }
+
+                // Update stats
+                updateStats(data);
+
+                // Run layout
+                runLayout();
+
+                showLoading(false);
+
+            } catch (error) {
+                showLoading(false);
+                showError(`API offline - mostrando dados demo. Para conectar, inicie o backend.`);
+                loadDemoData();
+                console.error(error);
+            }
+        }
+
+        function updateStats(data) {
+            document.getElementById('stat-nodes').textContent = data.node_count || cy.nodes().length;
+            document.getElementById('stat-edges').textContent = data.edge_count || cy.edges().length;
+            document.getElementById('stat-name').textContent = data.name || '-';
+
+            const n = cy.nodes().length;
+            const e = cy.edges().length;
+            const density = n > 1 ? (e / (n * (n - 1))).toFixed(4) : 0;
+            document.getElementById('stat-density').textContent = density;
+        }
+
+        // =============================================
+        // LAYOUT
+        // =============================================
+
+        function runLayout() {
+            const layoutName = document.getElementById('layout-select').value;
+
+            let options = { name: layoutName };
+
+            if (layoutName === 'cose') {
+                options = {
+                    name: 'cose',
+                    nodeRepulsion: 8000,
+                    idealEdgeLength: 100,
+                    animate: true,
+                    randomize: false,
+                    numIter: 1000
+                };
+            } else if (layoutName === 'concentric') {
+                options = {
+                    name: 'concentric',
+                    concentric: node => node.data('degree') || 0,
+                    levelWidth: () => 2
+                };
+            }
+
+            cy.layout(options).run();
+        }
+
+        // =============================================
+        // INTERACTIONS
+        // =============================================
+
+        // Node click - show info
+        cy.on('tap', 'node', function(evt) {
+            const node = evt.target;
+            showNodeInfo(node);
+            highlightNeighbors(node);
+        });
+
+        // Background click - clear selection
+        cy.on('tap', function(evt) {
+            if (evt.target === cy) {
+                clearHighlight();
+                clearNodeInfo();
+            }
+        });
+
+        function showNodeInfo(node) {
+            const data = node.data();
+            const inDegree = node.incomers('edge').length;
+            const outDegree = node.outgoers('edge').length;
+
+            document.getElementById('node-info').innerHTML = `
+                <h3 style="color: #e94560; margin-bottom: 15px;">Node Info</h3>
+                <div class="node-detail">
+                    <label>ID</label>
+                    <value>${data.id}</value>
+                </div>
+                <div class="node-detail">
+                    <label>Label</label>
+                    <value>${data.label || data.id}</value>
+                </div>
+                <div class="node-detail">
+                    <label>Degree (In/Out)</label>
+                    <value>${inDegree} / ${outDegree}</value>
+                </div>
+                <div class="node-detail">
+                    <label>Is TF/Hub</label>
+                    <value>${data.is_tf === 'true' ? 'Yes' : 'No'}</value>
+                </div>
+                ${data.description ? `
+                <div class="node-detail">
+                    <label>Description</label>
+                    <value>${data.description}</value>
+                </div>
+                ` : ''}
+                ${data.module ? `
+                <div class="node-detail">
+                    <label>Module</label>
+                    <value>${data.module}</value>
+                </div>
+                ` : ''}
+            `;
+        }
+
+        function clearNodeInfo() {
+            document.getElementById('node-info').innerHTML = `
+                <h3 style="color: #e94560; margin-bottom: 15px;">Node Info</h3>
+                <p style="color: #888; font-size: 0.9rem;">Clique em um node para ver detalhes</p>
+            `;
+        }
+
+        function highlightNeighbors(node) {
+            clearHighlight();
+            const neighborhood = node.closedNeighborhood();
+            cy.elements().addClass('faded');
+            neighborhood.removeClass('faded').addClass('highlighted');
+        }
+
+        function clearHighlight() {
+            cy.elements().removeClass('faded highlighted');
+        }
+
+        // =============================================
+        // FILTERS
+        // =============================================
+
+        // Weight filter
+        document.getElementById('weight-filter').addEventListener('input', function(e) {
+            const minWeight = parseFloat(e.target.value);
+            document.getElementById('weight-value').textContent = minWeight.toFixed(1);
+
+            cy.edges().forEach(edge => {
+                const weight = Math.abs(edge.data('weight') || 0);
+                if (weight < minWeight) {
+                    edge.style('display', 'none');
+                } else {
+                    edge.style('display', 'element');
+                }
+            });
+        });
+
+        // Gene search
+        document.getElementById('gene-search').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+
+            if (!query) {
+                clearHighlight();
+                return;
+            }
+
+            const matches = cy.nodes().filter(node => {
+                const id = (node.data('id') || '').toLowerCase();
+                const label = (node.data('label') || '').toLowerCase();
+                return id.includes(query) || label.includes(query);
+            });
+
+            if (matches.length > 0) {
+                cy.elements().addClass('faded');
+                matches.closedNeighborhood().removeClass('faded').addClass('highlighted');
+                cy.animate({ fit: { eles: matches, padding: 50 } });
+            }
+        });
+
+        // =============================================
+        // UI CONTROLS
+        // =============================================
+
+        document.getElementById('btn-load').addEventListener('click', loadNetwork);
+        document.getElementById('layout-select').addEventListener('change', runLayout);
+        document.getElementById('btn-fit').addEventListener('click', () => cy.fit(50));
+
+        document.getElementById('btn-export').addEventListener('click', function() {
+            const png = cy.png({ scale: 2, bg: '#0f0f23' });
+            const link = document.createElement('a');
+            link.download = 'grn_network.png';
+            link.href = png;
+            link.click();
+        });
+
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('hidden', !show);
+        }
+
+        function showError(message) {
+            const el = document.getElementById('error');
+            el.textContent = message;
+            el.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('error').classList.add('hidden');
+        }
+
+        // =============================================
+        // DEMO DATA (quando API não disponível)
+        // =============================================
+
+        function loadDemoData() {
+            const demoData = {
+                elements: {
+                    nodes: [
+                        { data: { id: 'SPSC_04270', label: 'Mig1', is_tf: 'true', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_05923', label: 'GH16', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_02155', label: 'CM', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_04321', label: 'COL', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_00576', label: 'SCRP1', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_06362', label: 'SCRP2', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_01958', label: 'NAG', module: 'MEpurple' } },
+                        { data: { id: 'SPSC_00571', label: 'MEX', is_tf: 'true', module: 'MEdarkturquoise' } },
+                        { data: { id: 'SPSC_00940', label: 'PH', module: 'MEdarkturquoise' } },
+                        { data: { id: 'SPSC_02450', label: 'hyp5', module: 'MEdarkturquoise' } }
+                    ],
+                    edges: [
+                        { data: { id: 'e1', source: 'SPSC_04270', target: 'SPSC_05923', weight: 0.92, regulation_type: 'activation' } },
+                        { data: { id: 'e2', source: 'SPSC_04270', target: 'SPSC_02155', weight: 0.88, regulation_type: 'activation' } },
+                        { data: { id: 'e3', source: 'SPSC_04270', target: 'SPSC_04321', weight: 0.85, regulation_type: 'activation' } },
+                        { data: { id: 'e4', source: 'SPSC_04270', target: 'SPSC_00576', weight: 0.78, regulation_type: 'activation' } },
+                        { data: { id: 'e5', source: 'SPSC_04270', target: 'SPSC_06362', weight: 0.82, regulation_type: 'activation' } },
+                        { data: { id: 'e6', source: 'SPSC_05923', target: 'SPSC_01958', weight: 0.75, regulation_type: 'activation' } },
+                        { data: { id: 'e7', source: 'SPSC_00571', target: 'SPSC_00940', weight: 0.71, regulation_type: 'activation' } },
+                        { data: { id: 'e8', source: 'SPSC_00571', target: 'SPSC_02450', weight: 0.68, regulation_type: 'activation' } },
+                        { data: { id: 'e9', source: 'SPSC_04270', target: 'SPSC_00571', weight: -0.45, regulation_type: 'repression' } }
+                    ]
+                },
+                name: 'Demo: S. scitamineum GRN',
+                node_count: 10,
+                edge_count: 9
+            };
+
+            cy.elements().remove();
+
+            const degrees = {};
+            demoData.elements.edges.forEach(edge => {
+                degrees[edge.data.source] = (degrees[edge.data.source] || 0) + 1;
+                degrees[edge.data.target] = (degrees[edge.data.target] || 0) + 1;
+            });
+
+            demoData.elements.nodes.forEach(node => {
+                node.data.degree = degrees[node.data.id] || 0;
+                cy.add({ group: 'nodes', data: node.data });
+            });
+
+            demoData.elements.edges.forEach(edge => {
+                cy.add({ group: 'edges', data: edge.data });
+            });
+
+            updateStats(demoData);
+            runLayout();
+        }
+
+        // Load demo data immediately (para teste sem backend)
+        loadDemoData();
+        showLoading(false);
+    </script>
+</body>
+</html>

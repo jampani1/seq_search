@@ -1,0 +1,185 @@
+# ============================================
+# Bioinformatics Hub - Docker Compose
+# ============================================
+#
+# COMO USAR:
+# ----------
+# Iniciar todos os serviços:    docker-compose up -d
+# Ver logs:                     docker-compose logs -f
+# Parar:                        docker-compose down
+# Parar e remover volumes:      docker-compose down -v
+#
+# SERVIÇOS:
+# ---------
+# - postgres: Banco de dados principal
+# - redis: Cache e fila de jobs
+# - neo4j: Banco de grafos (GRN)
+# - backend: API FastAPI
+# - frontend: React (em desenvolvimento)
+#
+# PORTAS:
+# -------
+# - 8000: Backend API
+# - 3000: Frontend
+# - 5432: PostgreSQL
+# - 6379: Redis
+# - 7474: Neo4j Browser
+# - 7687: Neo4j Bolt
+
+version: '3.8'
+
+services:
+  # ========================================
+  # POSTGRESQL - Banco Principal
+  # ========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: biohub_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: biohub
+      POSTGRES_PASSWORD: biohub123
+      POSTGRES_DB: biohub
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persistência de dados
+      - postgres_data:/var/lib/postgresql/data
+      # Script de inicialização (opcional)
+      # - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U biohub -d biohub"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # REDIS - Cache e Filas
+  # ========================================
+  redis:
+    image: redis:7-alpine
+    container_name: biohub_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # NEO4J - Banco de Grafos (GRN)
+  # ========================================
+  neo4j:
+    image: neo4j:5-community
+    container_name: biohub_neo4j
+    restart: unless-stopped
+    environment:
+      # Credenciais iniciais
+      NEO4J_AUTH: neo4j/biohub123
+      # Plugins (APOC é útil para operações complexas)
+      NEO4J_PLUGINS: '["apoc"]'
+      # Configurações de memória
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1G
+    ports:
+      - "7474:7474"  # Browser web
+      - "7687:7687"  # Bolt protocol
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD", "neo4j", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ========================================
+  # BACKEND - FastAPI
+  # ========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: biohub_backend
+    restart: unless-stopped
+    environment:
+      # Sobrescreve settings para usar containers
+      DATABASE_URL: postgresql+asyncpg://biohub:biohub123@postgres:5432/biohub
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: biohub123
+      DEBUG: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+      # Hot reload durante desenvolvimento
+      - ./backend/app:/app/app
+      # Persistência de uploads
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      # Bancos de dados BLAST/DIAMOND
+      - ./databases:/app/databases
+      # Dados de teste
+      - ./test_data:/app/test_data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+
+  # ========================================
+  # CELERY WORKER - Tarefas Assíncronas
+  # ========================================
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: biohub_celery
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://biohub:biohub123@postgres:5432/biohub
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    volumes:
+      - ./backend/app:/app/app
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+    depends_on:
+      - redis
+      - postgres
+    command: celery -A app.core.celery_app worker --loglevel=info
+    # Descomente quando o Celery estiver configurado
+    profiles: ["worker"]
+
+# ========================================
+# VOLUMES PERSISTENTES
+# ========================================
+volumes:
+  postgres_data:
+    name: biohub_postgres_data
+  redis_data:
+    name: biohub_redis_data
+  neo4j_data:
+    name: biohub_neo4j_data
+  neo4j_logs:
+    name: biohub_neo4j_logs
+
+# ========================================
+# NETWORKS (opcional, para isolamento)
+# ========================================
+# networks:
+#   biohub_network:
+#     driver: bridge
